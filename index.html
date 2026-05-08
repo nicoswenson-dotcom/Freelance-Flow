@@ -1,0 +1,3001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1" />
+  <title>FreelanceFlow</title>
+
+  <!-- PWA / iOS add-to-home-screen -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="FreelanceFlow" />
+  <meta name="theme-color" content="#B87762" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'&gt;&lt;rect width='180' height='180' rx='40' fill='%23B87762'/&gt;&lt;text x='90' y='128' font-size='110' text-anchor='middle' fill='%23FBF3E6' font-family='Georgia,serif'&gt;F&lt;/text&gt;&lt;/svg&gt;" />
+
+  <!-- Minimal web manifest embedded via data URL -->
+  <link rel="manifest" href='data:application/manifest+json,{"name":"FreelanceFlow","short_name":"FreelanceFlow","start_url":".","display":"standalone","background_color":"%23FBF3E6","theme_color":"%23B87762","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 512 512%27><rect width=%27512%27 height=%27512%27 rx=%27112%27 fill=%27%23B87762%27/><text x=%27256%27 y=%27360%27 font-size=%27320%27 text-anchor=%27middle%27 fill=%27%23FBF3E6%27 font-family=%27Georgia,serif%27>F</text></svg>","sizes":"512x512","type":"image/svg+xml","purpose":"any"}]}' />
+
+  <!-- Fonts: Inter (body) + Fraunces (legible editorial serif with optical sizing) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght,SOFT@9..144,400..700,50&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg:    '#FBF3E6',           // warm cream
+            paper: '#FFFBF2',           // very soft ivory paper
+            ink:   '#2C241E',           // warm espresso (near-black w/ brown undertone)
+            mute:  '#6B6256',           // warm taupe, darkened for WCAG AA body text
+            cream: '#F3E9D3',           // slightly darker cream for chips/sections
+            blush: '#F4DAD0',           // dusty rose blush
+            brand: {                    // dusty terracotta (primary)
+              50:  '#FAF0EA',
+              100: '#F4DFD3',
+              200: '#E2BDA9',
+              500: '#B87762',           // decorative (gradient start only)
+              600: '#8A5540',           // solid fills (white text, AAA)
+              700: '#6E4031',           // links / text on cream
+              800: '#553023',
+            },
+            pop: {                      // dusty rose (secondary)
+              50:  '#FBEFEB',
+              100: '#F4D8CF',
+              500: '#D4958A',           // decorative
+              600: '#9D574A',           // danger button (white text, AA)
+              700: '#7B3F34',           // danger text
+              800: '#5D2C22',
+            },
+            sage: {                     // muted sage green (for income/positive)
+              50:  '#F0F3E9',
+              100: '#E0E6D2',
+              200: '#C6D1B0',
+              500: '#9CAE85',           // decorative
+              600: '#6E8057',           // solid (tinted dots)
+              700: '#4D5E3A',           // badge text / solid fills
+              800: '#374426',
+            },
+            ochre: {                    // muted mustard (accent)
+              50:  '#FBF2DE',
+              100: '#F3E2BE',
+              500: '#D8B778',           // decorative
+              600: '#A17F38',           // solid fill
+              700: '#7D6232',           // gradient mid
+              800: '#574419',           // gradient end / badge text
+            },
+            plum: {                     // dusty plum (accent)
+              50:  '#F1E9EE',
+              100: '#E3D3DC',
+              500: '#9B7A8F',           // decorative
+              600: '#6C4F64',           // solid
+              700: '#52394B',           // badge text
+              800: '#3A2735',
+            }
+          },
+          fontFamily: {
+            sans: ['"Inter"', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['"Fraunces"', '"Cormorant Garamond"', 'Georgia', 'serif'],
+          },
+          boxShadow: {
+            soft: '0 1px 2px rgba(44,36,30,0.04), 0 2px 10px rgba(44,36,30,0.05)',
+            lift: '0 4px 16px rgba(44,36,30,0.08), 0 1px 3px rgba(44,36,30,0.04)',
+            pop:  '0 10px 28px rgba(184,119,98,0.22)',
+          },
+          borderRadius: {
+            '4xl': '2rem',
+          }
+        }
+      },
+      safelist: [
+        'bg-brand-600','bg-sage-600','bg-pop-600','bg-ochre-600','bg-plum-600',
+        'ring-brand-600','ring-sage-600','ring-pop-600','ring-ochre-600','ring-plum-600',
+        'text-brand-700','text-sage-700','text-pop-700','text-ochre-800','text-plum-700',
+        'border-brand-600','border-sage-600','border-pop-600','border-ochre-600','border-plum-600'
+      ]
+    }
+  </script>
+
+  <!-- React + ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel standalone for JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root {
+      --safe-bottom: env(safe-area-inset-bottom);
+      --bg: #FBF3E6;
+      --ink: #2C241E;
+      --mute: #6B6256;
+      --brand: #8A5540;
+      --pop:   #9D574A;
+    }
+    html, body, #root { height: 100%; }
+    body {
+      background:
+        radial-gradient(900px 560px at 8% -12%, rgba(184,119,98,0.10), transparent 62%),
+        radial-gradient(700px 520px at 112% 8%,  rgba(212,149,138,0.10), transparent 62%),
+        radial-gradient(600px 400px at 50% 110%, rgba(183,194,168,0.08), transparent 60%),
+        var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    * { -webkit-font-smoothing: antialiased; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { scrollbar-width: none; }
+    input, select, textarea, button { font-family: inherit; }
+
+    /* Display: Fraunces — editorial serif with optical sizing for strong legibility */
+    .font-display {
+      font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+      font-variation-settings: "opsz" 48, "SOFT" 50;
+      letter-spacing: -0.015em;
+    }
+    /* Kept name for backward compat; now renders upright serif (no italics). */
+    .italic-serif {
+      font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+      font-variation-settings: "opsz" 36, "SOFT" 50;
+      letter-spacing: -0.005em;
+    }
+    .display-tight {
+      font-family: 'Fraunces', 'Cormorant Garamond', Georgia, serif;
+      font-variation-settings: "opsz" 96, "SOFT" 30;
+      letter-spacing: -0.025em;
+      line-height: 0.98;
+    }
+
+    /* Grainy / sticker textures */
+    .grain { position: relative; overflow: hidden; }
+    .grain::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.05;
+      background-image: radial-gradient(#2C241E 1px, transparent 1px);
+      background-size: 3px 3px; mix-blend-mode: multiply;
+    }
+    .paper-grain { position: relative; }
+    .paper-grain::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.04;
+      background-image: radial-gradient(#2C241E 1px, transparent 1px);
+      background-size: 2.5px 2.5px; border-radius: inherit;
+    }
+    .tilt-sm { transform: rotate(-2deg); }
+    .tilt-md { transform: rotate(-4deg); }
+
+    /* Press + hover micro-interactions */
+    .press { transition: transform 120ms ease, box-shadow 160ms ease; }
+    .press:active { transform: scale(0.97); }
+    .lift { transition: transform 180ms ease, box-shadow 200ms ease; }
+    .lift:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(44,36,30,0.08); }
+
+    /* Animations */
+    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.08); opacity: 1; } 100% { transform: scale(1); } }
+    @keyframes wiggle { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(-3deg); } 75% { transform: rotate(3deg); } }
+    @keyframes glow { 0%,100% { box-shadow: 0 8px 22px rgba(184,119,98,0.28); } 50% { box-shadow: 0 12px 28px rgba(212,149,138,0.32); } }
+    .animate-slide-up { animation: slideUp 0.22s cubic-bezier(.2,.9,.3,1.2) both; }
+    .animate-fade-in  { animation: fadeIn 0.18s ease-out both; }
+    .animate-pop      { animation: pop 0.3s cubic-bezier(.2,.9,.3,1.4) both; }
+    .animate-glow     { animation: glow 3.5s ease-in-out infinite; }
+    .hover-wiggle:hover { animation: wiggle 0.4s ease-in-out; }
+
+    /* Focus ring */
+    *:focus-visible { outline: 2px solid #B87762; outline-offset: 2px; border-radius: 6px; }
+    button:focus-visible, a:focus-visible { outline-offset: 3px; }
+
+    /* Subtle selection color */
+    ::selection { background: rgba(184,119,98,0.22); color: #2C241E; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react">
+  const { useState, useEffect, useMemo, useCallback, useRef, createContext, useContext } = React;
+
+  // ========================================================================
+  // Constants
+  // ========================================================================
+  const PAYMENT_METHODS = [
+    { value: 'bank_transfer', label: 'Bank Transfer' },
+    { value: 'cash', label: 'Cash' },
+    { value: 'paypal', label: 'PayPal' },
+    { value: 'stripe', label: 'Stripe' },
+    { value: 'venmo', label: 'Venmo' },
+    { value: 'zelle', label: 'Zelle' },
+    { value: 'check', label: 'Check' },
+    { value: 'other', label: 'Other' },
+  ];
+
+  const CATEGORIES = [
+    { value: 'software', label: 'Software' },
+    { value: 'travel', label: 'Travel' },
+    { value: 'supplies', label: 'Supplies' },
+    { value: 'marketing', label: 'Marketing' },
+    { value: 'equipment', label: 'Equipment' },
+    { value: 'utilities', label: 'Utilities' },
+    { value: 'meals', label: 'Meals' },
+    { value: 'professional_services', label: 'Professional Services' },
+    { value: 'other', label: 'Other' },
+  ];
+
+  // Color keys kept stable for data compatibility; values mapped to accessible earth tones
+  // (using _600 variants that pass 3:1 contrast on the cream background)
+  const EVENT_COLORS = ['indigo','emerald','rose','amber','violet'];
+  const COLOR_BG = {
+    indigo: 'bg-brand-600', emerald: 'bg-sage-600', rose: 'bg-pop-600',
+    amber: 'bg-ochre-600', violet: 'bg-plum-600'
+  };
+  const COLOR_RING = {
+    indigo: 'ring-brand-600', emerald: 'ring-sage-600', rose: 'ring-pop-600',
+    amber: 'ring-ochre-600', violet: 'ring-plum-600'
+  };
+
+  // ========================================================================
+  // Utils
+  // ========================================================================
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+
+  const parseDate = (s) => {
+    // Always parse YYYY-MM-DD with explicit local-midnight to avoid tz drift
+    if (!s) return new Date();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return new Date(s + 'T00:00:00');
+    return new Date(s);
+  };
+
+  const toISODate = (d) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  };
+
+  const todayISO = () => toISODate(new Date());
+
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const MONTHS_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  const formatMoney = (n, symbol = '$') => {
+    const num = Number(n || 0);
+    return symbol + num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  const formatDate = (iso, opts = { month: 'short', day: 'numeric', year: 'numeric' }) => {
+    const d = parseDate(iso);
+    return d.toLocaleDateString('en-US', opts);
+  };
+
+  const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
+  const endOfMonth = (d) => new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
+  const startOfQuarter = (d) => new Date(d.getFullYear(), Math.floor(d.getMonth() / 3) * 3, 1);
+  const endOfQuarter = (d) => { const q = Math.floor(d.getMonth() / 3); return new Date(d.getFullYear(), q * 3 + 3, 0, 23, 59, 59); };
+  const startOfYear = (d) => new Date(d.getFullYear(), 0, 1);
+  const endOfYear = (d) => new Date(d.getFullYear(), 11, 31, 23, 59, 59);
+  const startOfWeek = (d) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - x.getDay()); return x; };
+  const endOfWeek = (d) => { const s = startOfWeek(d); return new Date(s.getFullYear(), s.getMonth(), s.getDate() + 6, 23, 59, 59); };
+
+  const formatDuration = (totalSeconds) => {
+    const s = Math.max(0, Math.floor(totalSeconds));
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const ss = s % 60;
+    if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+    return `${m}:${String(ss).padStart(2, '0')}`;
+  };
+  const formatHours = (totalSeconds) => {
+    const hours = totalSeconds / 3600;
+    return hours < 10 ? hours.toFixed(2) + 'h' : Math.round(hours) + 'h';
+  };
+
+  const inRange = (iso, start, end) => {
+    const d = parseDate(iso);
+    return d >= start && d <= end;
+  };
+
+  const incomeTotal = (t) => Number(t.amount || 0) + Number(t.tips || 0);
+
+  // ========================================================================
+  // Receipt storage (IndexedDB) + image compression + OCR
+  // ========================================================================
+  const IDB_NAME = 'ff_receipts';
+  const IDB_STORE = 'receipts';
+  let _dbPromise = null;
+  const openReceiptDB = () => {
+    if (_dbPromise) return _dbPromise;
+    _dbPromise = new Promise((resolve, reject) => {
+      if (!('indexedDB' in window)) { reject(new Error('IndexedDB not supported')); return; }
+      const req = indexedDB.open(IDB_NAME, 1);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(IDB_STORE)) {
+          db.createObjectStore(IDB_STORE);
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+    return _dbPromise;
+  };
+  const idbTx = async (mode) => {
+    const db = await openReceiptDB();
+    return db.transaction(IDB_STORE, mode).objectStore(IDB_STORE);
+  };
+  const putReceipt = async (id, dataUrl) => {
+    const store = await idbTx('readwrite');
+    return new Promise((res, rej) => {
+      const r = store.put(dataUrl, id);
+      r.onsuccess = () => res();
+      r.onerror = () => rej(r.error);
+    });
+  };
+  const getReceipt = async (id) => {
+    const store = await idbTx('readonly');
+    return new Promise((res, rej) => {
+      const r = store.get(id);
+      r.onsuccess = () => res(r.result || null);
+      r.onerror = () => rej(r.error);
+    });
+  };
+  const getAllReceiptKeys = async () => {
+    const store = await idbTx('readonly');
+    return new Promise((res, rej) => {
+      const r = store.getAllKeys();
+      r.onsuccess = () => res(r.result || []);
+      r.onerror = () => rej(r.error);
+    });
+  };
+  const deleteReceipt = async (id) => {
+    try {
+      const store = await idbTx('readwrite');
+      return new Promise((res) => {
+        const r = store.delete(id);
+        r.onsuccess = () => res();
+        r.onerror = () => res();
+      });
+    } catch (_) { /* ignore */ }
+  };
+
+  // Compress an image File/Blob to a JPEG data URL bounded by maxDim
+  const compressImage = (file, maxDim = 1600, quality = 0.78) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(reader.error);
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error('Could not load image'));
+      img.onload = () => {
+        let { width, height } = img;
+        const scale = Math.min(1, maxDim / Math.max(width, height));
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        try {
+          const dataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(dataUrl);
+        } catch (e) { reject(e); }
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Lazy-load tesseract.js (only when scanning)
+  let _tesseractPromise = null;
+  const loadTesseract = () => {
+    if (window.Tesseract) return Promise.resolve(window.Tesseract);
+    if (_tesseractPromise) return _tesseractPromise;
+    _tesseractPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.0/dist/tesseract.min.js';
+      s.async = true;
+      s.onload = () => resolve(window.Tesseract);
+      s.onerror = () => reject(new Error('Could not load OCR library'));
+      document.head.appendChild(s);
+    });
+    return _tesseractPromise;
+  };
+
+  // Parse OCR text into { amount, date }
+  const parseReceipt = (text) => {
+    if (!text) return { amount: null, date: null };
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    // Amount: prefer line containing TOTAL (excluding SUBTOTAL/TAX TOTAL)
+    let amount = null;
+    const moneyRe = /(?:\$|USD\s*)?(\d{1,4}(?:[.,]\d{3})*[.,]\d{2})\b/;
+    const totalLines = lines.filter(l => /\bTOTAL\b/i.test(l) && !/SUB[\s-]?TOTAL|TAX\s+TOTAL/i.test(l));
+    for (const l of totalLines) {
+      const m = l.match(moneyRe);
+      if (m) { amount = m[1]; break; }
+    }
+    if (!amount) {
+      // Fallback: largest money value in the text
+      let max = -1;
+      for (const l of lines) {
+        const re = /(\d{1,4}(?:[.,]\d{3})*[.,]\d{2})/g;
+        let m;
+        while ((m = re.exec(l)) !== null) {
+          const n = Number(m[1].replace(/,/g, ''));
+          if (!isNaN(n) && n > max) { max = n; amount = m[1]; }
+        }
+      }
+    }
+    if (amount) {
+      // Normalize: strip thousands separators, ensure dot decimal
+      const normalized = amount.replace(/,/g, '');
+      const num = Number(normalized);
+      amount = isNaN(num) ? null : num.toFixed(2);
+    }
+    // Date: try several patterns
+    let date = null;
+    const pad = (n) => String(n).padStart(2, '0');
+    const tryDate = (y, m, d) => {
+      y = Number(y); m = Number(m); d = Number(d);
+      if (y < 100) y += 2000;
+      if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+      return `${y}-${pad(m)}-${pad(d)}`;
+    };
+    const patterns = [
+      { re: /\b(20\d{2})[-\/.](\d{1,2})[-\/.](\d{1,2})\b/, order: 'ymd' },
+      { re: /\b(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})\b/, order: 'mdy' },
+      { re: /\b(\d{1,2})\.(\d{1,2})\.(\d{2,4})\b/, order: 'dmy' },
+    ];
+    for (const p of patterns) {
+      const m = text.match(p.re);
+      if (m) {
+        if (p.order === 'ymd') date = tryDate(m[1], m[2], m[3]);
+        else if (p.order === 'mdy') date = tryDate(m[3], m[1], m[2]);
+        else if (p.order === 'dmy') date = tryDate(m[3], m[2], m[1]);
+        if (date) break;
+      }
+    }
+    return { amount, date };
+  };
+
+  // ========================================================================
+  // Icons (minimal Lucide-style SVGs)
+  // ========================================================================
+  const Icon = ({ name, className = 'w-5 h-5', strokeWidth = 2 }) => {
+    const paths = {
+      home: <><path d="M3 12 L12 3 L21 12" /><path d="M5 10v10h14V10" /></>,
+      dashboard: <><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></>,
+      folder: <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/>,
+      plus: <><path d="M12 5v14"/><path d="M5 12h14"/></>,
+      calendar: <><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/></>,
+      chart: <><path d="M3 3v18h18"/><path d="M7 15l4-6 4 4 4-8"/></>,
+      settings: <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.2a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.2a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></>,
+      dollar: <><path d="M12 2v20"/><path d="M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></>,
+      coins: <><circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="M16.71 13.88l.7.71-2.82 2.82"/></>,
+      receipt: <><path d="M4 2v20l3-2 3 2 3-2 3 2 3-2 3 2V2H4z"/><path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h5"/></>,
+      trending: <><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></>,
+      edit: <><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></>,
+      trash: <><path d="M3 6h18"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></>,
+      x: <><path d="M18 6 6 18"/><path d="M6 6l12 12"/></>,
+      check: <path d="M20 6L9 17l-5-5"/>,
+      chevronLeft: <path d="M15 18l-6-6 6-6"/>,
+      chevronRight: <path d="M9 18l6-6-6-6"/>,
+      chevronDown: <path d="M6 9l6 6 6-6"/>,
+      user: <><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></>,
+      download: <><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></>,
+      logout: <><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></>,
+      arrowLeft: <><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></>,
+      alertTriangle: <><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></>,
+      wallet: <><path d="M20 12V8H6a2 2 0 0 1 0-4h12v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><circle cx="17" cy="14" r="1.5"/></>,
+      building: <><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M9 6h.01"/><path d="M15 6h.01"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M9 14h.01"/><path d="M15 14h.01"/><path d="M10 22v-4h4v4"/></>,
+      camera: <><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></>,
+      image: <><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></>,
+      eye: <><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>,
+      refresh: <><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></>,
+      clock: <><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></>,
+      play: <path d="M6 4l14 8-14 8z" fill="currentColor" stroke="none" />,
+      stop: <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" stroke="none" />,
+      pause: <><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor" stroke="none"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor" stroke="none"/></>,
+    };
+    return (
+      <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {paths[name] || null}
+      </svg>
+    );
+  };
+
+  // ========================================================================
+  // Storage hook
+  // ========================================================================
+  const useLocalState = (key, initial) => {
+    const [value, setValue] = useState(() => {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : initial;
+      } catch { return initial; }
+    });
+    useEffect(() => {
+      try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+    }, [key, value]);
+    return [value, setValue];
+  };
+
+  // ========================================================================
+  // App Context (single source of truth for data + mutations)
+  // ========================================================================
+  const AppCtx = createContext(null);
+  const useApp = () => useContext(AppCtx);
+
+  const AppProvider = ({ children }) => {
+    const [transactions, setTransactions] = useLocalState('ff_transactions', []);
+    const [events, setEvents] = useLocalState('ff_events', []);
+    const [timeEntries, setTimeEntries] = useLocalState('ff_time_entries', []);
+    const [activeTimer, setActiveTimer] = useLocalState('ff_active_timer', null); // { started_at, project, notes }
+    const [settings, setSettings] = useLocalState('ff_settings', {
+      business_name: '',
+      tax_rate: 0,
+      default_payment_method: 'bank_transfer',
+      currency: '$',
+    });
+
+    // eventOpts: null or {} to auto-create a linked event with defaults,
+    //            or pass { color, start_time, end_time, description } to customize,
+    //            or pass 'skip' to NOT create a linked event (caller will link manually).
+    const createTransaction = (data, eventOpts = null) => {
+      const t = { id: uid(), ...data };
+      setTransactions(prev => [t, ...prev]);
+      if (t.type === 'income' && eventOpts !== 'skip') {
+        const o = eventOpts || {};
+        const ev = {
+          id: uid(),
+          title: t.title,
+          date: t.date,
+          start_time: o.start_time || '',
+          end_time: o.end_time || '',
+          description: o.description || '',
+          color: o.color || 'emerald',
+          linked_transaction_id: t.id,
+        };
+        setEvents(prev => [ev, ...prev]);
+      }
+      return t;
+    };
+
+    const updateTransaction = (id, patch) => {
+      setTransactions(prev => prev.map(t => t.id === id ? { ...t, ...patch } : t));
+      // If income, keep the linked calendar event in sync
+      const current = transactions.find(t => t.id === id);
+      if (current && current.type === 'income') {
+        setEvents(prev => prev.map(e => {
+          if (e.linked_transaction_id !== id) return e;
+          const next = { ...e };
+          if (patch.date && patch.date !== e.date) next.date = patch.date;
+          if (patch.title && patch.title !== e.title) next.title = patch.title;
+          return next;
+        }));
+      }
+    };
+
+    const deleteTransaction = (id) => {
+      const t = transactions.find(x => x.id === id);
+      setTransactions(prev => prev.filter(x => x.id !== id));
+      // Remove linked calendar event (but only if auto-created via link)
+      if (t && t.type === 'income') {
+        setEvents(prev => prev.filter(e => e.linked_transaction_id !== id));
+      }
+      // Cascade-delete any stored receipt image
+      deleteReceipt(id);
+    };
+
+    const createEvent = (data) => {
+      const e = { id: uid(), color: 'indigo', ...data };
+      setEvents(prev => [e, ...prev]);
+      return e;
+    };
+
+    const updateEvent = (id, patch) => {
+      setEvents(prev => prev.map(e => e.id === id ? { ...e, ...patch } : e));
+    };
+
+    const deleteEvent = (id) => {
+      setEvents(prev => prev.filter(e => e.id !== id));
+    };
+
+    const updateSettings = (patch) => setSettings(prev => ({ ...prev, ...patch }));
+
+    // -------- Project / Venue merge --------
+    // Bulk-rename `from` -> `to` on the given field across transactions and events.
+    const mergeField = (field, from, to) => {
+      if (!from || !to || from === to) return;
+      setTransactions(prev => prev.map(t => (t[field] === from ? { ...t, [field]: to } : t)));
+      setEvents(prev => prev.map(e => (e[field] === from ? { ...e, [field]: to } : e)));
+      if (field === 'project') {
+        setTimeEntries(prev => prev.map(te => (te.project === from ? { ...te, project: to } : te)));
+      }
+    };
+    const mergeProjects = (from, to) => mergeField('project', from, to);
+    const mergeVenues   = (from, to) => mergeField('venue',   from, to);
+
+    // -------- Time tracking --------
+    const startTimer = (project = '', notes = '') => {
+      setActiveTimer({ started_at: Date.now(), project: project || '', notes: notes || '' });
+    };
+    const cancelTimer = () => setActiveTimer(null);
+    const stopTimer = ({ project, notes } = {}) => {
+      if (!activeTimer) return null;
+      const ended_at = Date.now();
+      const duration_seconds = Math.max(1, Math.round((ended_at - activeTimer.started_at) / 1000));
+      const entry = {
+        id: uid(),
+        started_at: activeTimer.started_at,
+        ended_at,
+        duration_seconds,
+        project: (project ?? activeTimer.project) || '',
+        notes: (notes ?? activeTimer.notes) || '',
+        date: toISODate(new Date(activeTimer.started_at)),
+      };
+      setTimeEntries(prev => [entry, ...prev]);
+      setActiveTimer(null);
+      return entry;
+    };
+    const addTimeEntry = (data) => {
+      const entry = { id: uid(), ...data };
+      setTimeEntries(prev => [entry, ...prev]);
+      return entry;
+    };
+    const updateTimeEntry = (id, patch) => {
+      setTimeEntries(prev => prev.map(te => te.id === id ? { ...te, ...patch } : te));
+    };
+    const deleteTimeEntry = (id) => {
+      setTimeEntries(prev => prev.filter(te => te.id !== id));
+    };
+
+    const value = {
+      transactions, events, settings, timeEntries, activeTimer,
+      createTransaction, updateTransaction, deleteTransaction,
+      createEvent, updateEvent, deleteEvent,
+      updateSettings,
+      mergeProjects, mergeVenues,
+      startTimer, stopTimer, cancelTimer,
+      addTimeEntry, updateTimeEntry, deleteTimeEntry,
+      currency: settings.currency || '$',
+      money: (n) => formatMoney(n, settings.currency || '$'),
+    };
+    return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>;
+  };
+
+  // ========================================================================
+  // Shared UI
+  // ========================================================================
+  const Card = ({ className = '', children, ...rest }) => (
+    <div className={`bg-paper rounded-3xl border border-ink/10 shadow-soft ${className}`} {...rest}>
+      {children}
+    </div>
+  );
+
+  const Button = ({ variant = 'primary', className = '', children, ...rest }) => {
+    const base = 'inline-flex items-center justify-center gap-2 rounded-2xl font-medium transition h-12 px-5 text-sm disabled:opacity-50 disabled:cursor-not-allowed press';
+    const v = {
+      primary: 'bg-brand-600 text-paper hover:bg-brand-700 active:bg-brand-800 shadow-soft',
+      secondary: 'bg-paper border border-ink/15 text-ink hover:bg-bg',
+      ghost: 'text-ink hover:bg-cream',
+      danger: 'bg-pop-600 text-paper hover:bg-pop-700',
+      dangerGhost: 'text-pop-700 hover:bg-pop-50',
+    };
+    return <button className={`${base} ${v[variant]} ${className}`} {...rest}>{children}</button>;
+  };
+
+  const Input = React.forwardRef(({ className = '', ...rest }, ref) => (
+    <input ref={ref}
+      className={`w-full h-12 px-4 rounded-2xl border border-ink/15 bg-paper text-ink placeholder:text-mute/60 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition ${className}`}
+      {...rest} />
+  ));
+
+  const Textarea = ({ className = '', ...rest }) => (
+    <textarea
+      className={`w-full px-4 py-3 rounded-2xl border border-ink/15 bg-paper text-ink placeholder:text-mute/60 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition ${className}`}
+      rows={3} {...rest} />
+  );
+
+  const Select = ({ className = '', children, ...rest }) => (
+    <div className="relative">
+      <select
+        className={`w-full h-12 px-4 pr-10 rounded-2xl border border-ink/15 bg-paper text-ink focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition appearance-none ${className}`}
+        {...rest}>{children}</select>
+      <Icon name="chevronDown" className="w-4 h-4 text-mute/70 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+    </div>
+  );
+
+  const Label = ({ children, className = '' }) => (
+    <label className={`block text-sm font-medium text-ink mb-1.5 ${className}`}>{children}</label>
+  );
+
+  const Badge = ({ variant = 'default', children, className = '' }) => {
+    const v = {
+      default: 'bg-cream text-ink',
+      income: 'bg-sage-100 text-sage-700',
+      expense: 'bg-cream text-ink',
+      indigo: 'bg-brand-100 text-brand-700',
+      amber: 'bg-ochre-100 text-ochre-800',
+    };
+    return <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium ${v[variant]} ${className}`}>{children}</span>;
+  };
+
+  // Modal (bottom sheet on mobile, centered card on desktop)
+  const Modal = ({ open, onClose, children, title, maxWidth = 'max-w-lg' }) => {
+    useEffect(() => {
+      if (!open) return;
+      const onKey = (e) => e.key === 'Escape' && onClose && onClose();
+      window.addEventListener('keydown', onKey);
+      document.body.style.overflow = 'hidden';
+      return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+    }, [open, onClose]);
+    if (!open) return null;
+    return (
+      <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center animate-fade-in">
+        <div className="absolute inset-0 bg-ink/40" onClick={onClose} />
+        <div className={`relative w-full ${maxWidth} bg-white rounded-t-3xl md:rounded-3xl md:m-4 max-h-[92vh] overflow-hidden shadow-xl animate-slide-up flex flex-col`}
+             style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+          {title && (
+            <div className="px-5 pt-5 pb-3 border-b border-ink/10 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-ink">{title}</h3>
+              <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-cream text-mute">
+                <Icon name="x" />
+              </button>
+            </div>
+          )}
+          {children}
+        </div>
+      </div>
+    );
+  };
+
+  const ConfirmDialog = ({ open, onConfirm, onClose, title, message, confirmLabel = 'Confirm', confirmVariant = 'danger' }) => (
+    <Modal open={open} onClose={onClose} maxWidth="max-w-sm" title={null}>
+      <div className="p-6">
+        <div className="w-12 h-12 rounded-full bg-pop-100 flex items-center justify-center mb-4">
+          <Icon name="alertTriangle" className="w-6 h-6 text-pop-700" />
+        </div>
+        <h3 className="text-lg font-semibold text-ink mb-1">{title}</h3>
+        <p className="text-mute text-sm mb-5">{message}</p>
+        <div className="flex gap-3">
+          <Button variant="secondary" className="flex-1" onClick={onClose}>Cancel</Button>
+          <Button variant={confirmVariant} className="flex-1" onClick={onConfirm}>{confirmLabel}</Button>
+        </div>
+      </div>
+    </Modal>
+  );
+
+  // ========================================================================
+  // Layout + Bottom Nav
+  // ========================================================================
+  const NavButton = ({ icon, label, active, onClick }) => (
+    <button onClick={onClick} className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 transition press">
+      <span className={`transition ${active ? 'text-brand-700 scale-110' : 'text-mute'}`}>
+        <Icon name={icon} className="w-[22px] h-[22px]" strokeWidth={active ? 2.2 : 1.8} />
+      </span>
+      <span className={`text-[10px] tracking-wide ${active ? 'text-brand-700 italic-serif' : 'text-mute font-medium'}`}>{label}</span>
+    </button>
+  );
+
+  const Layout = ({ page, setPage, children }) => (
+    <div className="min-h-screen pb-28" style={{ paddingBottom: 'calc(6.5rem + env(safe-area-inset-bottom))' }}>
+      <div className="max-w-xl mx-auto">{children}</div>
+      <nav className="fixed left-0 right-0 bottom-0 bg-paper/90 backdrop-blur-md border-t border-ink/10"
+           style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        <div className="max-w-xl mx-auto flex items-end px-2 relative">
+          <NavButton icon="dashboard" label="Dashboard" active={page === 'dashboard'} onClick={() => setPage('dashboard')} />
+          <NavButton icon="folder" label="Projects" active={page === 'projects'} onClick={() => setPage('projects')} />
+          <div className="w-16 flex justify-center">
+            <button onClick={() => setPage('add')}
+              aria-label="Add entry"
+              className="-mt-8 w-16 h-16 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-paper shadow-pop flex items-center justify-center press animate-glow">
+              <Icon name="plus" className="w-7 h-7" strokeWidth={2.4} />
+            </button>
+          </div>
+          <NavButton icon="calendar" label="Calendar" active={page === 'calendar'} onClick={() => setPage('calendar')} />
+          <NavButton icon="chart" label="Reports" active={page === 'reports'} onClick={() => setPage('reports')} />
+          <NavButton icon="settings" label="Settings" active={page === 'settings'} onClick={() => setPage('settings')} />
+        </div>
+      </nav>
+    </div>
+  );
+
+  const PageHeader = ({ title, subtitle, right }) => (
+    <div className="px-5 pt-9 pb-4 flex items-end justify-between">
+      <div>
+        <h1 className="font-display text-4xl md:text-5xl text-ink leading-[0.95]">
+          {title}
+        </h1>
+        {subtitle && <p className="text-sm text-mute mt-2 italic-serif">{subtitle}</p>}
+      </div>
+      {right}
+    </div>
+  );
+
+  // ========================================================================
+  // Dashboard Page
+  // ========================================================================
+  const StatCard = ({ title, value, icon, variant = 'default', onClick }) => {
+    const styles = {
+      income:  'bg-gradient-to-br from-sage-700 to-sage-800 text-paper',
+      expense: 'bg-gradient-to-br from-ink to-[#443830] text-paper',
+      profit:  'bg-gradient-to-br from-brand-700 to-brand-800 text-paper',
+      tips:    'bg-gradient-to-br from-ochre-700 to-ochre-800 text-paper',
+      default: 'bg-paper text-ink border border-ink/10',
+    };
+    const iconBg = variant === 'default' ? 'bg-cream text-mute' : 'bg-white/20 text-paper';
+    return (
+      <button onClick={onClick}
+        className={`${styles[variant]} paper-grain rounded-3xl p-4 text-left shadow-soft press lift relative overflow-hidden`}>
+        <div className="flex items-center justify-between mb-6">
+          <span className={`w-9 h-9 rounded-2xl flex items-center justify-center ${iconBg}`}>
+            <Icon name={icon} className="w-[18px] h-[18px]" strokeWidth={1.8} />
+          </span>
+        </div>
+        <div className={`text-[11px] tracking-wide uppercase font-medium mb-1 ${variant === 'default' ? 'text-mute' : 'text-white/75'}`}>{title}</div>
+        <div className="italic-serif text-3xl leading-none">{value}</div>
+      </button>
+    );
+  };
+
+  const TransactionRow = ({ t, onClick }) => {
+    const { money } = useApp();
+    const isIncome = t.type === 'income';
+    return (
+      <button onClick={onClick} className="w-full flex items-center gap-3 py-3 px-1 hover:bg-bg rounded-2xl transition text-left group">
+        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition group-hover:scale-[1.04] ${isIncome ? 'bg-sage-100 text-sage-700' : 'bg-cream text-mute'}`}>
+          <Icon name={isIncome ? 'wallet' : 'receipt'} className="w-[18px] h-[18px]" strokeWidth={1.8} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-sm font-medium text-ink truncate">{t.title || (isIncome ? 'Income' : 'Expense')}</div>
+          <div className="text-xs text-mute flex items-center gap-1.5">
+            <span>{formatDate(t.date)}</span>
+            {isIncome && Number(t.tips) > 0 && <>· <span className="text-sage-700 italic-serif">Tips {money(t.tips)}</span></>}
+          </div>
+        </div>
+        <div className={`italic-serif text-xl leading-none ${isIncome ? 'text-sage-700' : 'text-ink'}`}>
+          {isIncome ? '+' : '−'}{money(isIncome ? incomeTotal(t) : t.amount)}
+        </div>
+      </button>
+    );
+  };
+
+  // ========================================================================
+  // Time tracker — TimerCard + TimeAssignDialog + TimeEntriesModal
+  // ========================================================================
+  const TimeAssignDialog = ({ open, entry, mode = 'new', onClose, onSave, onDiscard, onDelete, projectSuggestions = [] }) => {
+    // mode: 'new' = just stopped timer (Discard/Save) | 'edit' = editing past entry (Delete/Save)
+    const [project, setProject] = useState('');
+    const [notes, setNotes] = useState('');
+    const [date, setDate] = useState(todayISO());
+    const [hours, setHours] = useState(0);
+    const [minutes, setMinutes] = useState(0);
+    useEffect(() => {
+      if (entry) {
+        setProject(entry.project || '');
+        setNotes(entry.notes || '');
+        setDate(entry.date || todayISO());
+        const total = Number(entry.duration_seconds || 0);
+        setHours(Math.floor(total / 3600));
+        setMinutes(Math.floor((total % 3600) / 60));
+      }
+    }, [entry]);
+    if (!entry) return null;
+    const newDuration = Math.max(60, (Number(hours) || 0) * 3600 + (Number(minutes) || 0) * 60);
+    const handleSave = () => {
+      onSave({
+        project: project.trim(),
+        notes: notes.trim(),
+        date,
+        duration_seconds: newDuration,
+      });
+    };
+    const title = mode === 'edit' ? 'Edit time entry' : 'Save tracked time';
+    return (
+      <Modal open={open} onClose={onClose} title={title} maxWidth="max-w-md">
+        <div className="p-5 space-y-4">
+          <div className="rounded-2xl bg-cream p-4 flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-brand-100 text-brand-700 flex items-center justify-center">
+              <Icon name="clock" className="w-6 h-6" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="font-display text-2xl text-ink leading-none">{formatDuration(newDuration)}</div>
+              <div className="text-xs text-mute mt-1">
+                {entry.started_at ? `Started ${new Date(entry.started_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : 'Manual entry'}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Date</Label>
+              <Input type="date" value={date} onChange={e => setDate(e.target.value)} />
+            </div>
+            <div>
+              <Label>Duration</Label>
+              <div className="flex items-center gap-2">
+                <Input type="number" min="0" max="23" value={hours}
+                  onChange={e => setHours(e.target.value)} className="w-full" aria-label="Hours" />
+                <span className="text-mute text-sm">h</span>
+                <Input type="number" min="0" max="59" value={minutes}
+                  onChange={e => setMinutes(e.target.value)} className="w-full" aria-label="Minutes" />
+                <span className="text-mute text-sm">m</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <Label>Project</Label>
+            <Input list="time-proj-list" value={project} onChange={e => setProject(e.target.value)}
+              placeholder="Optional — assign to a project" />
+            <datalist id="time-proj-list">{projectSuggestions.map(p => <option key={p} value={p} />)}</datalist>
+          </div>
+          <div>
+            <Label>Notes</Label>
+            <Textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="What did you work on?" rows={2} />
+          </div>
+          <div className="flex gap-2 pt-1">
+            {mode === 'edit' ? (
+              <Button variant="dangerGhost" className="flex-1" onClick={onDelete}>Delete</Button>
+            ) : (
+              <Button variant="dangerGhost" className="flex-1" onClick={onDiscard}>Discard</Button>
+            )}
+            <Button className="flex-1" onClick={handleSave}>{mode === 'edit' ? 'Save changes' : 'Save entry'}</Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
+  const TimeEntriesModal = ({ open, onClose, onEdit, onAdd }) => {
+    const { timeEntries } = useApp();
+    const sorted = useMemo(() => {
+      return [...timeEntries].sort((a, b) => {
+        const ta = a.started_at || parseDate(a.date).getTime();
+        const tb = b.started_at || parseDate(b.date).getTime();
+        return tb - ta;
+      });
+    }, [timeEntries]);
+    // Group by date
+    const groups = useMemo(() => {
+      const m = new Map();
+      sorted.forEach(te => {
+        const d = te.date || toISODate(new Date(te.started_at || Date.now()));
+        if (!m.has(d)) m.set(d, []);
+        m.get(d).push(te);
+      });
+      return Array.from(m.entries());
+    }, [sorted]);
+    const totalSec = sorted.reduce((s, te) => s + Number(te.duration_seconds || 0), 0);
+    return (
+      <Modal open={open} onClose={onClose} title="Time entries">
+        <div className="px-5 py-4 border-b border-ink/10 bg-bg flex items-center justify-between">
+          <div>
+            <div className="text-xs text-mute">{sorted.length} {sorted.length === 1 ? 'entry' : 'entries'} · total</div>
+            <div className="font-display text-2xl text-ink mt-0.5">{formatHours(totalSec)}</div>
+          </div>
+          <Button variant="secondary" onClick={onAdd} className="h-10">
+            <Icon name="plus" className="w-4 h-4" /> Add
+          </Button>
+        </div>
+        <div className="overflow-y-auto max-h-[65vh] p-3 space-y-4">
+          {sorted.length === 0 ? (
+            <div className="py-10 text-center text-mute text-sm">
+              No time entries yet. Start the timer or add one manually.
+            </div>
+          ) : groups.map(([date, items]) => {
+            const daySec = items.reduce((s, te) => s + Number(te.duration_seconds || 0), 0);
+            return (
+              <div key={date}>
+                <div className="px-2 mb-1.5 flex items-center justify-between">
+                  <div className="text-[11px] uppercase tracking-[0.16em] text-mute">{formatDate(date, { weekday: 'short', month: 'short', day: 'numeric' })}</div>
+                  <div className="text-xs text-mute italic-serif">{formatHours(daySec)}</div>
+                </div>
+                <Card className="p-1">
+                  {items.map(te => (
+                    <button key={te.id} onClick={() => onEdit(te)}
+                      className="w-full text-left flex items-center gap-3 p-3 rounded-2xl hover:bg-cream transition press">
+                      <div className="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
+                        <Icon name="clock" className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-ink truncate">
+                          {te.project || <span className="text-mute italic-serif">unassigned</span>}
+                        </div>
+                        {te.notes && <div className="text-xs text-mute truncate">{te.notes}</div>}
+                      </div>
+                      <div className="font-display text-lg text-ink leading-none" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                        {formatDuration(Number(te.duration_seconds || 0))}
+                      </div>
+                    </button>
+                  ))}
+                </Card>
+              </div>
+            );
+          })}
+        </div>
+      </Modal>
+    );
+  };
+
+  const TimerCard = () => {
+    const { activeTimer, timeEntries, transactions, startTimer, stopTimer, cancelTimer, addTimeEntry, updateTimeEntry, deleteTimeEntry } = useApp();
+    const [now, setNow] = useState(Date.now());
+    const [draft, setDraft] = useState(null); // entry just stopped (mode='new')
+    const [editing, setEditing] = useState(null); // existing entry being edited (mode='edit')
+    const [listOpen, setListOpen] = useState(false);
+
+    useEffect(() => {
+      if (!activeTimer) return;
+      const t = setInterval(() => setNow(Date.now()), 1000);
+      return () => clearInterval(t);
+    }, [activeTimer]);
+
+    const projectSuggestions = useMemo(() => {
+      const set = new Set();
+      transactions.forEach(t => { if (t.project) set.add(t.project); });
+      timeEntries.forEach(te => { if (te.project) set.add(te.project); });
+      return Array.from(set);
+    }, [transactions, timeEntries]);
+
+    const elapsed = activeTimer ? Math.max(0, Math.floor((now - activeTimer.started_at) / 1000)) : 0;
+
+    const weekTotalSec = useMemo(() => {
+      const s = startOfWeek(new Date()).getTime();
+      const e = endOfWeek(new Date()).getTime();
+      return timeEntries.reduce((sum, te) => {
+        const ts = te.started_at || parseDate(te.date).getTime();
+        if (ts >= s && ts <= e) return sum + Number(te.duration_seconds || 0);
+        return sum;
+      }, 0);
+    }, [timeEntries]);
+
+    const handleStart = () => startTimer('', '');
+    const handleStop = () => {
+      const entry = stopTimer();
+      if (entry) setDraft(entry);
+    };
+    const handleDraftSave = (patch) => {
+      if (draft) updateTimeEntry(draft.id, patch);
+      setDraft(null);
+    };
+    const handleDraftDiscard = () => {
+      if (draft) deleteTimeEntry(draft.id);
+      setDraft(null);
+    };
+    const handleEditSave = (patch) => {
+      if (editing) updateTimeEntry(editing.id, patch);
+      setEditing(null);
+    };
+    const handleEditDelete = () => {
+      if (editing) deleteTimeEntry(editing.id);
+      setEditing(null);
+    };
+    const handleAddManual = () => {
+      // Open editor with a fresh manual entry (1 hour default, today)
+      const now = Date.now();
+      const entry = addTimeEntry({
+        started_at: now, ended_at: now,
+        duration_seconds: 3600,
+        project: '', notes: '',
+        date: todayISO(),
+      });
+      setListOpen(false);
+      setEditing(entry);
+    };
+
+    return (
+      <>
+        <Card className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2 text-mute">
+              <Icon name="clock" className="w-4 h-4" />
+              <span className="text-[11px] uppercase tracking-[0.16em]">Time tracker</span>
+            </div>
+            <button onClick={() => setListOpen(true)}
+              className="text-xs text-mute hover:text-ink transition press">
+              <span className="italic-serif text-ink">{formatHours(weekTotalSec)}</span> this week →
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <div className={`font-display text-4xl leading-none ${activeTimer ? 'text-brand-700' : 'text-ink/40'}`}
+                   style={{ fontVariantNumeric: 'tabular-nums' }}>
+                {formatDuration(elapsed)}
+              </div>
+              <div className="text-xs text-mute mt-1.5">
+                {activeTimer
+                  ? `Running since ${new Date(activeTimer.started_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`
+                  : 'Not running'}
+              </div>
+            </div>
+            {activeTimer ? (
+              <div className="flex items-center gap-2">
+                <button onClick={cancelTimer}
+                  className="w-11 h-11 rounded-2xl bg-cream text-mute flex items-center justify-center press"
+                  aria-label="Cancel timer" title="Cancel">
+                  <Icon name="x" className="w-5 h-5" />
+                </button>
+                <button onClick={handleStop}
+                  className="h-12 px-5 rounded-2xl bg-pop-600 text-paper font-medium flex items-center gap-2 press shadow-soft"
+                  aria-label="Stop timer">
+                  <Icon name="stop" className="w-4 h-4" /> Stop
+                </button>
+              </div>
+            ) : (
+              <button onClick={handleStart}
+                className="h-12 px-5 rounded-2xl bg-brand-600 text-paper font-medium flex items-center gap-2 press shadow-soft"
+                aria-label="Start timer">
+                <Icon name="play" className="w-4 h-4" /> Start
+              </button>
+            )}
+          </div>
+        </Card>
+        <TimeAssignDialog
+          open={!!draft}
+          entry={draft}
+          mode="new"
+          onClose={() => setDraft(null)}
+          onSave={handleDraftSave}
+          onDiscard={handleDraftDiscard}
+          projectSuggestions={projectSuggestions}
+        />
+        <TimeAssignDialog
+          open={!!editing}
+          entry={editing}
+          mode="edit"
+          onClose={() => setEditing(null)}
+          onSave={handleEditSave}
+          onDelete={handleEditDelete}
+          projectSuggestions={projectSuggestions}
+        />
+        <TimeEntriesModal
+          open={listOpen}
+          onClose={() => setListOpen(false)}
+          onEdit={(te) => { setListOpen(false); setEditing(te); }}
+          onAdd={handleAddManual}
+        />
+      </>
+    );
+  };
+
+  const Dashboard = ({ setPage, openTransaction, openStat }) => {
+    const { transactions, settings, money } = useApp();
+    const totals = useMemo(() => {
+      const income = transactions.filter(t => t.type === 'income');
+      const expense = transactions.filter(t => t.type === 'expense');
+      const tips = income.reduce((s, t) => s + Number(t.tips || 0), 0);
+      const grossIncome = income.reduce((s, t) => s + incomeTotal(t), 0);
+      const exp = expense.reduce((s, t) => s + Number(t.amount || 0), 0);
+      return { grossIncome, tips, exp, net: grossIncome - exp };
+    }, [transactions]);
+    const recent = transactions.slice(0, 5);
+
+    const greeting = useMemo(() => {
+      const h = new Date().getHours();
+      if (h < 12) return 'Good morning';
+      if (h < 18) return 'Good afternoon';
+      return 'Good evening';
+    }, []);
+    const name = (settings.business_name || '').trim();
+
+    return (
+      <>
+        <div className="px-5 pt-9 pb-5">
+          <p className="text-[11px] uppercase tracking-[0.16em] text-mute/80 mb-1">{formatDate(todayISO(), { weekday: 'long', month: 'long', day: 'numeric' })}</p>
+          <h1 className="font-display text-[42px] md:text-5xl text-ink leading-[0.98]">
+            {greeting},{' '}
+            <span className="italic-serif text-brand-600">{name || 'friend'}</span>
+          </h1>
+        </div>
+        <div className="px-5 grid grid-cols-2 gap-3">
+          <StatCard title="Total Income" value={money(totals.grossIncome)} icon="dollar" variant="income" onClick={() => openStat('income')} />
+          <StatCard title="Tips Earned" value={money(totals.tips)} icon="coins" variant="tips" onClick={() => openStat('tips')} />
+          <StatCard title="Total Expenses" value={money(totals.exp)} icon="receipt" variant="expense" onClick={() => openStat('expenses')} />
+          <StatCard title="Net Profit" value={money(totals.net)} icon="trending" variant="profit" />
+        </div>
+
+        <div className="px-5 mt-4">
+          <TimerCard />
+        </div>
+
+        <div className="px-5 mt-4">
+          <button onClick={() => setPage('add')}
+            className="w-full bg-paper rounded-3xl p-4 border border-ink/10 shadow-soft flex items-center gap-3 press lift">
+            <div className="w-10 h-10 rounded-2xl bg-brand-100 text-brand-600 flex items-center justify-center">
+              <Icon name="plus" className="w-5 h-5" strokeWidth={2.2} />
+            </div>
+            <div className="flex-1 text-left">
+              <div className="font-display text-lg text-ink leading-tight">Add new entry</div>
+              <div className="text-xs text-mute">Log income or expense</div>
+            </div>
+            <Icon name="chevronRight" className="w-5 h-5 text-mute/70" />
+          </button>
+        </div>
+
+        <div className="px-5 mt-8">
+          <div className="flex items-end justify-between mb-3">
+            <h2 className="font-display text-2xl text-ink">Recent <span className="italic-serif text-mute">activity</span></h2>
+            <button onClick={() => setPage('reports')} className="text-sm text-brand-700 italic-serif">View all →</button>
+          </div>
+          <Card className="p-2">
+            {recent.length === 0 ? (
+              <div className="py-10 text-center">
+                <div className="w-14 h-14 rounded-2xl bg-cream flex items-center justify-center mx-auto mb-3 text-mute/70">
+                  <Icon name="receipt" className="w-7 h-7" />
+                </div>
+                <p className="text-mute font-medium">No transactions yet</p>
+                <p className="text-sm text-mute mt-1">Tap “Add New Entry” to get started</p>
+              </div>
+            ) : recent.map(t => <TransactionRow key={t.id} t={t} onClick={() => openTransaction(t.id)} />)}
+          </Card>
+        </div>
+      </>
+    );
+  };
+
+  // ========================================================================
+  // Receipt Scanner (used in expense form)
+  // ========================================================================
+  const ReceiptScanner = ({ receiptDataUrl, setReceiptDataUrl, onParsed }) => {
+    const fileRef = useRef(null);
+    const [busy, setBusy] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [status, setStatus] = useState('');
+    const [error, setError] = useState('');
+    const [parsed, setParsed] = useState(null);
+
+    const reset = () => {
+      setReceiptDataUrl(null);
+      setParsed(null);
+      setProgress(0);
+      setStatus('');
+      setError('');
+      if (fileRef.current) fileRef.current.value = '';
+    };
+
+    const handleFile = async (file) => {
+      if (!file) return;
+      setBusy(true);
+      setError('');
+      setStatus('Compressing image…');
+      setProgress(0);
+      try {
+        const dataUrl = await compressImage(file);
+        setReceiptDataUrl(dataUrl);
+        setStatus('Loading scanner…');
+        const Tesseract = await loadTesseract();
+        setStatus('Scanning text…');
+        const result = await Tesseract.recognize(dataUrl, 'eng', {
+          logger: (m) => {
+            if (m.status === 'recognizing text') {
+              setProgress(Math.round((m.progress || 0) * 100));
+              setStatus('Reading receipt…');
+            } else if (m.status) {
+              setStatus(m.status.charAt(0).toUpperCase() + m.status.slice(1));
+            }
+          },
+        });
+        const text = (result && result.data && result.data.text) || '';
+        const fields = parseReceipt(text);
+        setParsed(fields);
+        if (fields.amount || fields.date) {
+          onParsed && onParsed(fields);
+        }
+        setStatus(fields.amount || fields.date ? 'Done' : 'Scanned (no fields detected)');
+      } catch (err) {
+        console.error(err);
+        setError(err.message || 'Could not process the image');
+        setStatus('');
+      } finally {
+        setBusy(false);
+      }
+    };
+
+    if (!receiptDataUrl) {
+      return (
+        <div className="rounded-xl border-2 border-dashed border-ink/20 bg-paper p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-lg bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
+              <Icon name="receipt" />
+            </div>
+            <div className="flex-1">
+              <div className="font-semibold text-ink">Scan a receipt</div>
+              <div className="text-sm text-mute mt-0.5">Auto-fills amount and date.</div>
+              <div className="mt-3 flex gap-2">
+                <button type="button" onClick={() => fileRef.current && fileRef.current.click()}
+                  className="inline-flex items-center gap-2 px-3 h-10 rounded-lg bg-ink text-paper text-sm font-medium hover:bg-brand-800 transition">
+                  <Icon name="camera" className="w-4 h-4" /> Take or upload
+                </button>
+              </div>
+            </div>
+          </div>
+          <input ref={fileRef} type="file" accept="image/*" capture="environment"
+            className="hidden" onChange={(e) => handleFile(e.target.files && e.target.files[0])} />
+        </div>
+      );
+    }
+
+    return (
+      <div className="rounded-xl border border-ink/15 bg-paper overflow-hidden">
+        <div className="relative bg-cream">
+          <img src={receiptDataUrl} alt="Receipt"
+            className="w-full max-h-72 object-contain bg-cream" />
+          <button type="button" onClick={reset}
+            className="absolute top-2 right-2 w-8 h-8 rounded-full bg-ink/70 text-paper flex items-center justify-center hover:bg-ink"
+            aria-label="Remove receipt">
+            <Icon name="x" className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="p-3">
+          {busy && (
+            <div>
+              <div className="text-sm text-mute mb-1.5">{status} {progress > 0 ? `${progress}%` : ''}</div>
+              <div className="h-1.5 bg-cream rounded-full overflow-hidden">
+                <div className="h-full bg-brand-600 transition-all" style={{ width: `${progress}%` }} />
+              </div>
+            </div>
+          )}
+          {!busy && parsed && (parsed.amount || parsed.date) && (
+            <div className="text-sm text-sage-700 flex items-center gap-2">
+              <Icon name="check" className="w-4 h-4" />
+              Auto-filled{parsed.amount ? ` amount` : ''}{parsed.amount && parsed.date ? ' &' : ''}{parsed.date ? ` date` : ''}.
+            </div>
+          )}
+          {!busy && parsed && !parsed.amount && !parsed.date && (
+            <div className="text-sm text-mute">Saved with the entry. Couldn't auto-detect fields — fill them in below.</div>
+          )}
+          {!busy && !parsed && !error && (
+            <div className="text-sm text-mute">Receipt attached.</div>
+          )}
+          {error && <div className="text-sm text-pop-700">{error}</div>}
+          <input ref={fileRef} type="file" accept="image/*" capture="environment"
+            className="hidden" onChange={(e) => handleFile(e.target.files && e.target.files[0])} />
+          {!busy && (
+            <div className="mt-2 flex gap-2">
+              <button type="button" onClick={() => fileRef.current && fileRef.current.click()}
+                className="inline-flex items-center gap-1.5 px-2.5 h-8 rounded-lg bg-cream text-ink text-xs font-medium hover:bg-brand-100 transition">
+                <Icon name="refresh" className="w-3.5 h-3.5" /> Replace
+              </button>
+              <button type="button" onClick={reset}
+                className="inline-flex items-center gap-1.5 px-2.5 h-8 rounded-lg text-mute text-xs font-medium hover:bg-cream transition">
+                Remove
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // ========================================================================
+  // Receipt Viewer modal
+  // ========================================================================
+  const ReceiptViewer = ({ id, onClose }) => {
+    const [src, setSrc] = useState(null);
+    const [missing, setMissing] = useState(false);
+    useEffect(() => {
+      let cancelled = false;
+      getReceipt(id).then(r => {
+        if (cancelled) return;
+        if (!r) setMissing(true);
+        else setSrc(r);
+      }).catch(() => { if (!cancelled) setMissing(true); });
+      return () => { cancelled = true; };
+    }, [id]);
+    return (
+      <div className="fixed inset-0 z-50 bg-ink/80 flex items-center justify-center p-4" onClick={onClose}>
+        <button onClick={onClose}
+          className="absolute top-4 right-4 w-10 h-10 rounded-full bg-paper/20 text-paper hover:bg-paper/30 flex items-center justify-center"
+          aria-label="Close">
+          <Icon name="x" />
+        </button>
+        <div className="max-w-3xl w-full" onClick={(e) => e.stopPropagation()}>
+          {src ? (
+            <img src={src} alt="Receipt" className="w-full max-h-[85vh] object-contain rounded-xl shadow-soft bg-paper" />
+          ) : missing ? (
+            <div className="bg-paper rounded-xl p-8 text-center">
+              <div className="w-12 h-12 mx-auto rounded-full bg-cream text-mute flex items-center justify-center mb-2">
+                <Icon name="image" />
+              </div>
+              <div className="font-semibold text-ink">Receipt not found</div>
+              <div className="text-sm text-mute mt-1">It may have been removed.</div>
+            </div>
+          ) : (
+            <div className="bg-paper rounded-xl p-8 text-center text-mute">Loading…</div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  // ========================================================================
+  // Receipts Gallery (all stored receipt images)
+  // ========================================================================
+  const ReceiptsGallery = ({ onClose, openTransaction }) => {
+    const { transactions, money } = useApp();
+    const [items, setItems] = useState(null);
+    const [viewing, setViewing] = useState(null);
+    const [year, setYear] = useState('all'); // 'all' | YYYY string
+
+    useEffect(() => {
+      let cancelled = false;
+      (async () => {
+        try {
+          const keys = await getAllReceiptKeys();
+          const keySet = new Set(keys);
+          const matched = transactions
+            .filter(t => t.type === 'expense' && keySet.has(t.id))
+            .sort((a, b) => (a.date < b.date ? 1 : -1));
+          const loaded = await Promise.all(matched.map(async t => ({
+            t,
+            src: await getReceipt(t.id),
+          })));
+          if (!cancelled) setItems(loaded);
+        } catch (err) {
+          if (!cancelled) setItems([]);
+        }
+      })();
+      return () => { cancelled = true; };
+    }, [transactions]);
+
+    const years = useMemo(() => {
+      if (!items) return [];
+      const set = new Set();
+      items.forEach(({ t }) => { if (t.date) set.add(String(t.date).slice(0, 4)); });
+      return Array.from(set).sort().reverse();
+    }, [items]);
+
+    const filtered = useMemo(() => {
+      if (!items) return null;
+      if (year === 'all') return items;
+      return items.filter(({ t }) => String(t.date).slice(0, 4) === year);
+    }, [items, year]);
+
+    const total = useMemo(() => {
+      if (!filtered) return 0;
+      return filtered.reduce((s, { t }) => s + Number(t.amount || 0), 0);
+    }, [filtered]);
+
+    return (
+      <div className="fixed inset-0 z-40 bg-bg overflow-y-auto">
+        <div className="px-5 pt-6 pb-3 flex items-center gap-3 sticky top-0 bg-bg z-10 border-b border-ink/10">
+          <button onClick={onClose} className="w-10 h-10 rounded-full hover:bg-cream flex items-center justify-center">
+            <Icon name="arrowLeft" className="w-5 h-5" />
+          </button>
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold text-ink">Receipts</h1>
+            <p className="text-sm text-mute">{filtered ? `${filtered.length} saved` : 'Loading…'}</p>
+          </div>
+        </div>
+        <div className="px-5 py-4">
+          {items && items.length > 0 && (
+            <Card className="p-4 mb-4 flex items-center justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="text-xs text-mute uppercase tracking-wider">
+                  {year === 'all' ? 'Total · all receipts' : `Total · ${year}`}
+                </div>
+                <div className="text-2xl font-bold text-ink mt-0.5">{money(total)}</div>
+                <div className="text-xs text-mute mt-0.5">{filtered.length} receipt{filtered.length !== 1 ? 's' : ''}</div>
+              </div>
+              {years.length > 0 && (
+                <Select value={year} onChange={e => setYear(e.target.value)} className="w-32">
+                  <option value="all">All years</option>
+                  {years.map(y => <option key={y} value={y}>{y}</option>)}
+                </Select>
+              )}
+            </Card>
+          )}
+          {filtered === null ? (
+            <div className="text-center text-mute py-12">Loading receipts…</div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-16 h-16 mx-auto rounded-full bg-cream text-mute flex items-center justify-center mb-3">
+                <Icon name="receipt" className="w-8 h-8" />
+              </div>
+              <div className="font-semibold text-ink">{year === 'all' ? 'No receipts yet' : `No receipts in ${year}`}</div>
+              <div className="text-sm text-mute mt-1 max-w-xs mx-auto">Scan a receipt when you log an expense and it'll show up here.</div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {filtered.map(({ t, src }) => (
+                <div key={t.id} className="bg-paper rounded-xl overflow-hidden border border-ink/10 shadow-soft">
+                  <button type="button" onClick={() => setViewing(t.id)}
+                    className="block w-full aspect-[3/4] bg-cream overflow-hidden">
+                    {src ? (
+                      <img src={src} alt={t.title} className="w-full h-full object-cover hover:scale-[1.02] transition" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-mute">
+                        <Icon name="image" className="w-8 h-8" />
+                      </div>
+                    )}
+                  </button>
+                  <button type="button" onClick={() => { onClose(); openTransaction && openTransaction(t.id); }}
+                    className="block w-full text-left px-3 py-2 hover:bg-cream transition">
+                    <div className="text-sm font-medium text-ink truncate">{t.title}</div>
+                    <div className="text-xs text-mute flex items-center justify-between mt-0.5">
+                      <span>{formatDate(t.date)}</span>
+                      <span className="font-semibold text-ink">{money(t.amount)}</span>
+                    </div>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        {viewing && <ReceiptViewer id={viewing} onClose={() => setViewing(null)} />}
+      </div>
+    );
+  };
+
+  // ========================================================================
+  // Add Entry Page
+  // ========================================================================
+  const AddEntry = ({ setPage }) => {
+    const { createTransaction, updateTransaction, transactions, events, settings, money } = useApp();
+    const [tab, setTab] = useState('income');
+    const [saved, setSaved] = useState(false);
+
+    const projectSuggestions = useMemo(() => {
+      const set = new Set();
+      transactions.forEach(t => { if (t.project) set.add(t.project); });
+      return Array.from(set);
+    }, [transactions]);
+
+    const venueSuggestions = useMemo(() => {
+      const set = new Set();
+      transactions.forEach(t => { if (t.venue) set.add(t.venue); });
+      events.forEach(e => { if (e.venue) set.add(e.venue); });
+      return Array.from(set);
+    }, [transactions, events]);
+
+    // Income form
+    const [inc, setInc] = useState({
+      title: '', amount: '', tips: '', date: todayISO(),
+      payment_method: settings.default_payment_method || 'bank_transfer',
+      project: '', venue: '', notes: '',
+    });
+    // Expense form
+    const [exp, setExp] = useState({
+      title: '', amount: '', date: todayISO(),
+      category: 'other', project: '', venue: '', linked_to_income_id: '', notes: '',
+    });
+    // Receipt (expense only)
+    const [receiptDataUrl, setReceiptDataUrl] = useState(null);
+
+    const applyReceiptFields = ({ amount, date }) => {
+      setExp(prev => ({
+        ...prev,
+        amount: amount && !prev.amount ? amount : prev.amount,
+        date: date || prev.date,
+      }));
+    };
+
+    const incomeOptions = useMemo(
+      () => transactions.filter(t => t.type === 'income'),
+      [transactions]
+    );
+
+    const submit = async (e) => {
+      e.preventDefault();
+      if (tab === 'income') {
+        if (!inc.title.trim() || !inc.amount) return;
+        createTransaction({
+          type: 'income',
+          title: inc.title.trim(),
+          amount: Number(inc.amount),
+          tips: Number(inc.tips || 0),
+          date: inc.date,
+          payment_method: inc.payment_method,
+          project: inc.project.trim() || null,
+          venue: inc.venue.trim() || null,
+          notes: inc.notes.trim() || null,
+        });
+      } else {
+        if (!exp.title.trim() || !exp.amount) return;
+        const tx = createTransaction({
+          type: 'expense',
+          title: exp.title.trim(),
+          amount: Number(exp.amount),
+          date: exp.date,
+          category: exp.category,
+          project: exp.project.trim() || null,
+          venue: exp.venue.trim() || null,
+          linked_to_income_id: exp.linked_to_income_id || null,
+          notes: exp.notes.trim() || null,
+          has_receipt: !!receiptDataUrl,
+        });
+        if (receiptDataUrl && tx && tx.id) {
+          try {
+            await putReceipt(tx.id, receiptDataUrl);
+          } catch (err) {
+            console.warn('Could not store receipt image:', err);
+            updateTransaction(tx.id, { has_receipt: false });
+          }
+        }
+      }
+      setSaved(true);
+      setTimeout(() => setPage('dashboard'), 1200);
+    };
+
+    if (saved) {
+      return (
+        <div className="min-h-[70vh] flex flex-col items-center justify-center px-5">
+          <div className="w-20 h-20 rounded-full bg-sage-100 text-sage-700 flex items-center justify-center mb-4 animate-slide-up">
+            <Icon name="check" className="w-10 h-10" strokeWidth={3} />
+          </div>
+          <h2 className="text-2xl font-bold text-ink">Saved!</h2>
+          <p className="text-mute mt-1">Returning to dashboard…</p>
+        </div>
+      );
+    }
+
+    const incTotal = Number(inc.amount || 0) + Number(inc.tips || 0);
+
+    return (
+      <>
+        <div className="px-5 pt-6 pb-3 flex items-center gap-3">
+          <button onClick={() => setPage('dashboard')} className="w-10 h-10 rounded-full hover:bg-cream flex items-center justify-center">
+            <Icon name="arrowLeft" className="w-5 h-5" />
+          </button>
+          <h1 className="text-2xl font-bold text-ink">Add Entry</h1>
+        </div>
+
+        <div className="px-5">
+          <div className="bg-cream p-1 rounded-xl flex mb-5 h-14">
+            <button onClick={() => setTab('income')}
+              className={`flex-1 rounded-lg font-medium text-sm transition ${tab === 'income' ? 'bg-white shadow-sm text-sage-700' : 'text-mute'}`}>
+              Income
+            </button>
+            <button onClick={() => setTab('expense')}
+              className={`flex-1 rounded-lg font-medium text-sm transition ${tab === 'expense' ? 'bg-white shadow-sm text-ink' : 'text-mute'}`}>
+              Expense
+            </button>
+          </div>
+
+          <form onSubmit={submit} className="space-y-4">
+            {tab === 'income' ? (
+              <>
+                <div><Label>Event Title *</Label>
+                  <Input value={inc.title} onChange={e => setInc({ ...inc, title: e.target.value })} placeholder="e.g. Wedding gig" required />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div><Label>Payment Amount *</Label>
+                    <Input type="number" step="0.01" min="0" value={inc.amount}
+                      onChange={e => setInc({ ...inc, amount: e.target.value })} placeholder="0.00" required />
+                  </div>
+                  <div><Label>Tips</Label>
+                    <Input type="number" step="0.01" min="0" value={inc.tips}
+                      onChange={e => setInc({ ...inc, tips: e.target.value })} placeholder="0.00" />
+                  </div>
+                </div>
+                {incTotal > 0 && (
+                  <div className="bg-sage-50 border border-sage-200 rounded-xl p-3 flex items-center justify-between">
+                    <span className="text-sm text-sage-700 font-medium">Total</span>
+                    <span className="text-lg font-bold text-sage-700">{money(incTotal)}</span>
+                  </div>
+                )}
+                <div><Label>Date</Label>
+                  <Input type="date" value={inc.date} onChange={e => setInc({ ...inc, date: e.target.value })} />
+                </div>
+                <div><Label>Payment Method</Label>
+                  <Select value={inc.payment_method} onChange={e => setInc({ ...inc, payment_method: e.target.value })}>
+                    {PAYMENT_METHODS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
+                  </Select>
+                </div>
+                <div><Label>Project / Client</Label>
+                  <Input list="proj-list" value={inc.project} onChange={e => setInc({ ...inc, project: e.target.value })} placeholder="Optional" />
+                  <datalist id="proj-list">{projectSuggestions.map(p => <option key={p} value={p} />)}</datalist>
+                </div>
+                <div><Label>Venue</Label>
+                  <Input list="venue-list" value={inc.venue} onChange={e => setInc({ ...inc, venue: e.target.value })} placeholder="Optional" />
+                  <datalist id="venue-list">{venueSuggestions.map(v => <option key={v} value={v} />)}</datalist>
+                </div>
+                <div><Label>Notes</Label>
+                  <Textarea value={inc.notes} onChange={e => setInc({ ...inc, notes: e.target.value })} placeholder="Optional" />
+                </div>
+              </>
+            ) : (
+              <>
+                <ReceiptScanner
+                  receiptDataUrl={receiptDataUrl}
+                  setReceiptDataUrl={setReceiptDataUrl}
+                  onParsed={applyReceiptFields}
+                />
+                <div><Label>Expense Title *</Label>
+                  <Input value={exp.title} onChange={e => setExp({ ...exp, title: e.target.value })} placeholder="e.g. Software subscription" required />
+                </div>
+                <div><Label>Amount *</Label>
+                  <Input type="number" step="0.01" min="0" value={exp.amount}
+                    onChange={e => setExp({ ...exp, amount: e.target.value })} placeholder="0.00" required />
+                </div>
+                {Number(exp.amount) > 0 && (
+                  <div className="bg-cream border border-ink/15 rounded-xl p-3 flex items-center justify-between">
+                    <span className="text-sm text-ink font-medium">Total</span>
+                    <span className="text-lg font-bold text-ink">{money(exp.amount)}</span>
+                  </div>
+                )}
+                <div><Label>Category</Label>
+                  <Select value={exp.category} onChange={e => setExp({ ...exp, category: e.target.value })}>
+                    {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                  </Select>
+                </div>
+                <div><Label>Date</Label>
+                  <Input type="date" value={exp.date} onChange={e => setExp({ ...exp, date: e.target.value })} />
+                </div>
+                <div><Label>Project / Client</Label>
+                  <Input list="proj-list-e" value={exp.project} onChange={e => setExp({ ...exp, project: e.target.value })} placeholder="Optional" />
+                  <datalist id="proj-list-e">{projectSuggestions.map(p => <option key={p} value={p} />)}</datalist>
+                </div>
+                <div><Label>Venue</Label>
+                  <Input list="venue-list-e" value={exp.venue} onChange={e => setExp({ ...exp, venue: e.target.value })} placeholder="Optional" />
+                  <datalist id="venue-list-e">{venueSuggestions.map(v => <option key={v} value={v} />)}</datalist>
+                </div>
+                <div><Label>Link to Income Event</Label>
+                  <Select value={exp.linked_to_income_id} onChange={e => setExp({ ...exp, linked_to_income_id: e.target.value })}>
+                    <option value="">— None —</option>
+                    {incomeOptions.map(i => (
+                      <option key={i.id} value={i.id}>
+                        {i.title} · {formatDate(i.date)}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <div><Label>Notes</Label>
+                  <Textarea value={exp.notes} onChange={e => setExp({ ...exp, notes: e.target.value })} placeholder="Optional" />
+                </div>
+              </>
+            )}
+
+            <Button type="submit" className="w-full h-14 text-base">Save Entry</Button>
+          </form>
+        </div>
+      </>
+    );
+  };
+
+  // ========================================================================
+  // Calendar Page
+  // ========================================================================
+  const Calendar = ({ openTransaction, openEvent, createEventOnDate }) => {
+    const { transactions, events, money } = useApp();
+    const [viewDate, setViewDate] = useState(() => new Date());
+
+    const monthStart = startOfMonth(viewDate);
+    const monthEnd = endOfMonth(viewDate);
+
+    // Compute calendar grid: 6 weeks, starting from Sunday
+    const firstDow = monthStart.getDay();
+    const days = [];
+    const gridStart = new Date(monthStart);
+    gridStart.setDate(monthStart.getDate() - firstDow);
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(gridStart);
+      d.setDate(gridStart.getDate() + i);
+      days.push(d);
+    }
+
+    // Pills per day: CalendarEvents + income Transactions.
+    // Deduplicate: if an income tx has an event with linked_transaction_id === tx.id,
+    // show the event (which may carry custom color/title) not the tx pill.
+    const itemsByDate = useMemo(() => {
+      const map = {};
+      const linkedTxIds = new Set(events.filter(e => e.linked_transaction_id).map(e => e.linked_transaction_id));
+      events.forEach(e => {
+        if (!map[e.date]) map[e.date] = [];
+        map[e.date].push({ kind: 'event', id: e.id, title: e.title, color: e.color, ref: e });
+      });
+      transactions.filter(t => t.type === 'income' && !linkedTxIds.has(t.id)).forEach(t => {
+        if (!map[t.date]) map[t.date] = [];
+        map[t.date].push({ kind: 'income', id: t.id, title: t.title, color: 'emerald', ref: t });
+      });
+      return map;
+    }, [events, transactions]);
+
+    const monthlyIncome = useMemo(() => {
+      return transactions
+        .filter(t => t.type === 'income')
+        .filter(t => inRange(t.date, monthStart, monthEnd))
+        .reduce((s, t) => s + incomeTotal(t), 0);
+    }, [transactions, viewDate]);
+
+    const shift = (n) => setViewDate(new Date(viewDate.getFullYear(), viewDate.getMonth() + n, 1));
+    const todayStr = todayISO();
+
+    return (
+      <>
+        <PageHeader title="Calendar" subtitle="Your schedule at a glance" />
+        <div className="px-5">
+          <Card className="p-3">
+            <div className="flex items-center justify-between mb-3 px-1">
+              <button onClick={() => shift(-1)} className="w-9 h-9 rounded-full hover:bg-cream flex items-center justify-center">
+                <Icon name="chevronLeft" />
+              </button>
+              <div className="text-base font-semibold text-ink">
+                {MONTHS_LONG[viewDate.getMonth()]} {viewDate.getFullYear()}
+              </div>
+              <button onClick={() => shift(1)} className="w-9 h-9 rounded-full hover:bg-cream flex items-center justify-center">
+                <Icon name="chevronRight" />
+              </button>
+            </div>
+            <div className="grid grid-cols-7 text-center text-[10px] font-semibold text-mute uppercase tracking-wider mb-1">
+              {DOW.map(d => <div key={d}>{d}</div>)}
+            </div>
+            <div className="grid grid-cols-7 gap-1">
+              {days.map((d, i) => {
+                const iso = toISODate(d);
+                const items = itemsByDate[iso] || [];
+                const inMonth = d.getMonth() === viewDate.getMonth();
+                const isToday = iso === todayStr;
+                return (
+                  <button key={i} onClick={() => createEventOnDate(iso)}
+                    className={`min-h-[60px] rounded-lg p-1 text-left text-xs flex flex-col gap-0.5 transition ${
+                      inMonth ? 'hover:bg-cream' : 'opacity-30 hover:opacity-60'
+                    }`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-semibold ${
+                      isToday ? 'bg-brand-600 text-white' : 'text-ink'
+                    }`}>
+                      {d.getDate()}
+                    </div>
+                    <div className="space-y-0.5">
+                      {items.slice(0, 2).map(it => (
+                        <span key={it.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (it.kind === 'event') openEvent(it.ref);
+                            else openTransaction(it.ref.id);
+                          }}
+                          className={`block truncate rounded px-1 py-0.5 text-white text-[10px] font-medium ${COLOR_BG[it.color] || 'bg-brand-500'}`}>
+                          {it.title}
+                        </span>
+                      ))}
+                      {items.length > 2 && (
+                        <span className="text-[10px] text-mute px-1">+{items.length - 2} more</span>
+                      )}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </Card>
+
+          <Card className="mt-4 p-4 bg-gradient-to-br from-sage-500 to-sage-600 text-white border-0">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-xs text-white/80 font-medium">Income this month</div>
+                <div className="text-2xl font-bold mt-0.5">{money(monthlyIncome)}</div>
+              </div>
+              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
+                <Icon name="dollar" className="w-6 h-6" />
+              </div>
+            </div>
+          </Card>
+        </div>
+
+        <button onClick={() => createEventOnDate(todayStr)}
+          className="fixed right-5 w-14 h-14 rounded-full bg-brand-600 text-white shadow-lg shadow-indigo-600/30 flex items-center justify-center hover:bg-brand-700 active:scale-95 transition z-20"
+          style={{ bottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
+          <Icon name="plus" className="w-6 h-6" strokeWidth={2.5} />
+        </button>
+      </>
+    );
+  };
+
+  // ========================================================================
+  // Reports Page
+  // ========================================================================
+  const SimpleBarChart = ({ data }) => {
+    // data: [{label, income, expense}]
+    const max = Math.max(1, ...data.map(d => Math.max(d.income, d.expense)));
+    return (
+      <div className="flex items-end gap-1 h-40 px-2">
+        {data.map((d, i) => (
+          <div key={i} className="flex-1 flex flex-col items-center gap-1">
+            <div className="w-full flex gap-0.5 items-end h-36">
+              <div className="flex-1 bg-sage-500 rounded-t" style={{ height: `${(d.income / max) * 100}%` }} title={`Income: ${d.income.toFixed(2)}`} />
+              <div className="flex-1 bg-mute rounded-t" style={{ height: `${(d.expense / max) * 100}%` }} title={`Expense: ${d.expense.toFixed(2)}`} />
+            </div>
+            <div className="text-[10px] text-mute">{d.label}</div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const Reports = ({ openTransaction }) => {
+    const { transactions, money } = useApp();
+    const [period, setPeriod] = useState('monthly');
+    const [offset, setOffset] = useState(0); // 0 = current, -1 = previous, etc.
+    const now = new Date();
+    const { start, end, label, ref } = useMemo(() => {
+      if (period === 'monthly') {
+        const r = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+        return { ref: r, start: startOfMonth(r), end: endOfMonth(r), label: `${MONTHS_LONG[r.getMonth()]} ${r.getFullYear()}` };
+      }
+      if (period === 'quarterly') {
+        const r = new Date(now.getFullYear(), now.getMonth() + offset * 3, 1);
+        const q = Math.floor(r.getMonth() / 3) + 1;
+        return { ref: r, start: startOfQuarter(r), end: endOfQuarter(r), label: `Q${q} ${r.getFullYear()}` };
+      }
+      const r = new Date(now.getFullYear() + offset, 0, 1);
+      return { ref: r, start: startOfYear(r), end: endOfYear(r), label: `${r.getFullYear()}` };
+    }, [period, offset]);
+
+    const setPeriodAndReset = (p) => { setPeriod(p); setOffset(0); };
+    const nextDisabled = offset >= 0;
+
+    const filtered = useMemo(() => transactions.filter(t => inRange(t.date, start, end)), [transactions, start, end]);
+    const income = filtered.filter(t => t.type === 'income').reduce((s, t) => s + incomeTotal(t), 0);
+    const exp = filtered.filter(t => t.type === 'expense').reduce((s, t) => s + Number(t.amount || 0), 0);
+
+    // Bucket data for chart
+    const buckets = useMemo(() => {
+      if (period === 'annual') {
+        return Array.from({ length: 12 }).map((_, i) => {
+          const mStart = new Date(ref.getFullYear(), i, 1);
+          const mEnd = new Date(ref.getFullYear(), i + 1, 0, 23, 59, 59);
+          const inc = transactions.filter(t => t.type === 'income' && inRange(t.date, mStart, mEnd)).reduce((s, t) => s + incomeTotal(t), 0);
+          const ex = transactions.filter(t => t.type === 'expense' && inRange(t.date, mStart, mEnd)).reduce((s, t) => s + Number(t.amount || 0), 0);
+          return { label: MONTHS[i], income: inc, expense: ex };
+        });
+      }
+      if (period === 'quarterly') {
+        const q = Math.floor(ref.getMonth() / 3);
+        return [0, 1, 2].map(i => {
+          const mStart = new Date(ref.getFullYear(), q * 3 + i, 1);
+          const mEnd = new Date(ref.getFullYear(), q * 3 + i + 1, 0, 23, 59, 59);
+          const inc = transactions.filter(t => t.type === 'income' && inRange(t.date, mStart, mEnd)).reduce((s, t) => s + incomeTotal(t), 0);
+          const ex = transactions.filter(t => t.type === 'expense' && inRange(t.date, mStart, mEnd)).reduce((s, t) => s + Number(t.amount || 0), 0);
+          return { label: MONTHS[q * 3 + i], income: inc, expense: ex };
+        });
+      }
+      // monthly: 4 weekly buckets
+      return Array.from({ length: 4 }).map((_, i) => {
+        const wStart = new Date(start); wStart.setDate(1 + i * 7);
+        const wEnd = new Date(start); wEnd.setDate(Math.min(1 + (i + 1) * 7 - 1, endOfMonth(ref).getDate())); wEnd.setHours(23, 59, 59);
+        const inc = transactions.filter(t => t.type === 'income' && inRange(t.date, wStart, wEnd)).reduce((s, t) => s + incomeTotal(t), 0);
+        const ex = transactions.filter(t => t.type === 'expense' && inRange(t.date, wStart, wEnd)).reduce((s, t) => s + Number(t.amount || 0), 0);
+        return { label: `W${i + 1}`, income: inc, expense: ex };
+      });
+    }, [period, transactions, ref, start]);
+
+    return (
+      <>
+        <PageHeader title="Reports" subtitle={label} />
+        <div className="px-5">
+          <div className="bg-cream p-1 rounded-xl flex h-12 mb-3">
+            {['monthly','quarterly','annual'].map(p => (
+              <button key={p} onClick={() => setPeriodAndReset(p)}
+                className={`flex-1 rounded-lg font-medium text-sm capitalize transition ${period === p ? 'bg-white shadow-sm text-brand-600' : 'text-mute'}`}>
+                {p}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between mb-4 px-1">
+            <button onClick={() => setOffset(o => o - 1)}
+              className="w-9 h-9 rounded-full hover:bg-cream flex items-center justify-center text-ink press"
+              aria-label="Previous period">
+              <Icon name="chevronLeft" className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="font-display text-lg text-ink">{label}</span>
+              {offset !== 0 && (
+                <button onClick={() => setOffset(0)}
+                  className="text-xs text-brand-700 italic-serif hover:underline">today</button>
+              )}
+            </div>
+            <button onClick={() => !nextDisabled && setOffset(o => o + 1)}
+              disabled={nextDisabled}
+              className={`w-9 h-9 rounded-full flex items-center justify-center press ${nextDisabled ? 'text-mute/30 cursor-not-allowed' : 'text-ink hover:bg-cream'}`}
+              aria-label="Next period">
+              <Icon name="chevronRight" className="w-5 h-5" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 mb-4">
+            <Card className="p-3">
+              <div className="text-[10px] font-semibold text-sage-700 uppercase tracking-wide">Income</div>
+              <div className="text-base font-bold text-ink mt-1">{money(income)}</div>
+            </Card>
+            <Card className="p-3">
+              <div className="text-[10px] font-semibold text-ink uppercase tracking-wide">Expenses</div>
+              <div className="text-base font-bold text-ink mt-1">{money(exp)}</div>
+            </Card>
+            <Card className="p-3">
+              <div className="text-[10px] font-semibold text-brand-700 uppercase tracking-wide">Net</div>
+              <div className={`text-base font-bold mt-1 ${income - exp >= 0 ? 'text-ink' : 'text-pop-700'}`}>{money(income - exp)}</div>
+            </Card>
+          </div>
+
+          <Card className="p-4 mb-4">
+            <div className="flex items-center gap-4 mb-2 text-xs">
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-sage-500" /> Income</span>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded bg-mute" /> Expense</span>
+            </div>
+            <SimpleBarChart data={buckets} />
+          </Card>
+
+          <Card className="p-2">
+            {filtered.length === 0 ? (
+              <div className="py-8 text-center text-mute text-sm">No transactions in this period</div>
+            ) : filtered.map(t => <TransactionRow key={t.id} t={t} onClick={() => openTransaction(t.id)} />)}
+          </Card>
+        </div>
+      </>
+    );
+  };
+
+  // ========================================================================
+  // Projects Page
+  // ========================================================================
+  // Reusable: small modal to pick another group to merge into.
+  const MergeIntoDialog = ({ from, options, onClose, onConfirm, label = 'group' }) => {
+    const [target, setTarget] = useState('');
+    return (
+      <Modal open={true} onClose={onClose} title={`Merge "${from}" into…`}>
+        <div className="p-5 space-y-3">
+          <p className="text-sm text-mute">All transactions tagged "{from}" will be reassigned to the {label} you pick. This cannot be undone.</p>
+          <Select value={target} onChange={e => setTarget(e.target.value)}>
+            <option value="">— Select a {label} —</option>
+            {options.filter(o => o !== from).map(o => <option key={o} value={o}>{o}</option>)}
+          </Select>
+          <div className="flex gap-2 pt-2">
+            <Button variant="secondary" className="flex-1" onClick={onClose}>Cancel</Button>
+            <Button className="flex-1" onClick={() => target && onConfirm(target)} disabled={!target}>Merge</Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
+  const Projects = ({ openTransaction }) => {
+    const { transactions, events, money, mergeProjects, mergeVenues } = useApp();
+    const [tab, setTab] = useState('projects'); // 'projects' | 'venues'
+    const [activeProject, setActiveProject] = useState(null);
+    const [activeVenue, setActiveVenue] = useState(null);
+    const [mergeFrom, setMergeFrom] = useState(null); // string when open
+
+    const projects = useMemo(() => {
+      const byName = {};
+      transactions.forEach(t => {
+        if (!t.project) return;
+        if (!byName[t.project]) byName[t.project] = { name: t.project, income: 0, expenses: 0, ids: [] };
+        if (t.type === 'income') byName[t.project].income += incomeTotal(t);
+        else byName[t.project].expenses += Number(t.amount || 0);
+        byName[t.project].ids.push(t.id);
+      });
+      return Object.values(byName)
+        .map(p => ({ ...p, net: p.income - p.expenses }))
+        .sort((a, b) => b.net - a.net);
+    }, [transactions]);
+
+    const venues = useMemo(() => {
+      const byName = {};
+      transactions.forEach(t => {
+        if (!t.venue) return;
+        if (!byName[t.venue]) byName[t.venue] = { name: t.venue, income: 0, expenses: 0, ids: [], eventIds: [] };
+        if (t.type === 'income') byName[t.venue].income += incomeTotal(t);
+        else byName[t.venue].expenses += Number(t.amount || 0);
+        byName[t.venue].ids.push(t.id);
+      });
+      events.forEach(e => {
+        if (!e.venue) return;
+        if (!byName[e.venue]) byName[e.venue] = { name: e.venue, income: 0, expenses: 0, ids: [], eventIds: [] };
+        if (!byName[e.venue].eventIds.includes(e.id) && !e.linked_transaction_id) {
+          byName[e.venue].eventIds.push(e.id);
+        }
+      });
+      return Object.values(byName)
+        .map(v => ({ ...v, net: v.income - v.expenses }))
+        .sort((a, b) => b.net - a.net);
+    }, [transactions, events]);
+
+    // ---- Project detail view ----
+    if (activeProject) {
+      const p = projects.find(x => x.name === activeProject);
+      if (!p) { setActiveProject(null); return null; }
+      const list = transactions.filter(t => p.ids.includes(t.id));
+      const otherProjects = projects.map(x => x.name);
+      return (
+        <>
+          <div className="px-5 pt-6 pb-3 flex items-center gap-3">
+            <button onClick={() => setActiveProject(null)} className="w-10 h-10 rounded-full hover:bg-cream flex items-center justify-center">
+              <Icon name="arrowLeft" className="w-5 h-5" />
+            </button>
+            <div className="flex-1">
+              <div className="text-xs text-mute">Project</div>
+              <h1 className="text-xl font-bold text-ink">{p.name}</h1>
+            </div>
+            {projects.length > 1 && (
+              <button type="button" onClick={() => setMergeFrom(p.name)}
+                className="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg bg-paper border border-ink/15 text-ink text-sm font-medium hover:bg-cream transition">
+                <Icon name="folder" className="w-4 h-4" /> Merge
+              </button>
+            )}
+          </div>
+          <div className="px-5 grid grid-cols-3 gap-2 mb-4">
+            <Card className="p-3">
+              <div className="text-[10px] font-semibold text-sage-700 uppercase">Income</div>
+              <div className="text-base font-bold mt-1">{money(p.income)}</div>
+            </Card>
+            <Card className="p-3">
+              <div className="text-[10px] font-semibold text-ink uppercase">Expenses</div>
+              <div className="text-base font-bold mt-1">{money(p.expenses)}</div>
+            </Card>
+            <Card className="p-3">
+              <div className="text-[10px] font-semibold text-brand-700 uppercase">Net</div>
+              <div className={`text-base font-bold mt-1 ${p.net >= 0 ? 'text-ink' : 'text-pop-700'}`}>{money(p.net)}</div>
+            </Card>
+          </div>
+          <div className="px-5">
+            <Card className="p-2">
+              {list.map(t => <TransactionRow key={t.id} t={t} onClick={() => openTransaction(t.id)} />)}
+            </Card>
+          </div>
+          {mergeFrom && (
+            <MergeIntoDialog from={mergeFrom} options={otherProjects} label="project"
+              onClose={() => setMergeFrom(null)}
+              onConfirm={(to) => { mergeProjects(mergeFrom, to); setMergeFrom(null); setActiveProject(to); }} />
+          )}
+        </>
+      );
+    }
+
+    // ---- Venue detail view ----
+    if (activeVenue) {
+      const v = venues.find(x => x.name === activeVenue);
+      if (!v) { setActiveVenue(null); return null; }
+      const list = transactions.filter(t => v.ids.includes(t.id));
+      const venueEvents = events.filter(e => v.eventIds.includes(e.id));
+      const otherVenues = venues.map(x => x.name);
+      return (
+        <>
+          <div className="px-5 pt-6 pb-3 flex items-center gap-3">
+            <button onClick={() => setActiveVenue(null)} className="w-10 h-10 rounded-full hover:bg-cream flex items-center justify-center">
+              <Icon name="arrowLeft" className="w-5 h-5" />
+            </button>
+            <div className="flex-1">
+              <div className="text-xs text-mute">Venue</div>
+              <h1 className="text-xl font-bold text-ink">{v.name}</h1>
+            </div>
+            {venues.length > 1 && (
+              <button type="button" onClick={() => setMergeFrom(v.name)}
+                className="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg bg-paper border border-ink/15 text-ink text-sm font-medium hover:bg-cream transition">
+                <Icon name="building" className="w-4 h-4" /> Merge
+              </button>
+            )}
+          </div>
+          <div className="px-5 grid grid-cols-3 gap-2 mb-4">
+            <Card className="p-3">
+              <div className="text-[10px] font-semibold text-sage-700 uppercase">Income</div>
+              <div className="text-base font-bold mt-1">{money(v.income)}</div>
+            </Card>
+            <Card className="p-3">
+              <div className="text-[10px] font-semibold text-ink uppercase">Expenses</div>
+              <div className="text-base font-bold mt-1">{money(v.expenses)}</div>
+            </Card>
+            <Card className="p-3">
+              <div className="text-[10px] font-semibold text-brand-700 uppercase">Net</div>
+              <div className={`text-base font-bold mt-1 ${v.net >= 0 ? 'text-ink' : 'text-pop-700'}`}>{money(v.net)}</div>
+            </Card>
+          </div>
+          <div className="px-5 space-y-3">
+            {list.length > 0 && (
+              <Card className="p-2">
+                {list.map(t => <TransactionRow key={t.id} t={t} onClick={() => openTransaction(t.id)} />)}
+              </Card>
+            )}
+            {venueEvents.length > 0 && (
+              <Card className="p-3">
+                <div className="text-xs font-semibold text-mute uppercase tracking-wider mb-2">Events at this venue</div>
+                {venueEvents.map(e => (
+                  <div key={e.id} className="py-2 border-b border-ink/5 last:border-0">
+                    <div className="text-sm font-medium text-ink">{e.title}</div>
+                    <div className="text-xs text-mute">{formatDate(e.date)}{e.start_time ? ` · ${e.start_time}` : ''}</div>
+                  </div>
+                ))}
+              </Card>
+            )}
+          </div>
+          {mergeFrom && (
+            <MergeIntoDialog from={mergeFrom} options={otherVenues} label="venue"
+              onClose={() => setMergeFrom(null)}
+              onConfirm={(to) => { mergeVenues(mergeFrom, to); setMergeFrom(null); setActiveVenue(to); }} />
+          )}
+        </>
+      );
+    }
+
+    // ---- List view with tab toggle ----
+    const list = tab === 'projects' ? projects : venues;
+    const emptyCopy = tab === 'projects'
+      ? 'Tag transactions with a project name to see them grouped here'
+      : 'Tag a transaction or event with a venue to see it grouped here';
+
+    return (
+      <>
+        <PageHeader
+          title={tab === 'projects' ? 'Projects' : 'Venues'}
+          subtitle={tab === 'projects' ? 'Grouped by client or project tag' : 'Grouped by location'}
+        />
+        <div className="px-5 mb-4">
+          <div className="bg-cream p-1 rounded-xl flex h-12">
+            <button onClick={() => setTab('projects')}
+              className={`flex-1 rounded-lg font-medium text-sm transition ${tab === 'projects' ? 'bg-white shadow-sm text-ink' : 'text-mute'}`}>
+              Projects
+            </button>
+            <button onClick={() => setTab('venues')}
+              className={`flex-1 rounded-lg font-medium text-sm transition ${tab === 'venues' ? 'bg-white shadow-sm text-ink' : 'text-mute'}`}>
+              Venues
+            </button>
+          </div>
+        </div>
+        <div className="px-5 space-y-3">
+          {list.length === 0 ? (
+            <Card className="p-8 text-center">
+              <div className="w-14 h-14 rounded-2xl bg-cream text-mute/70 flex items-center justify-center mx-auto mb-3">
+                <Icon name={tab === 'projects' ? 'folder' : 'building'} className="w-7 h-7" />
+              </div>
+              <p className="text-mute font-medium">No {tab} yet</p>
+              <p className="text-sm text-mute mt-1">{emptyCopy}</p>
+            </Card>
+          ) : list.map(p => (
+            <button key={p.name}
+              onClick={() => tab === 'projects' ? setActiveProject(p.name) : setActiveVenue(p.name)}
+              className="w-full text-left">
+              <Card className="p-4 hover:shadow-md transition">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-9 h-9 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center">
+                      <Icon name={tab === 'projects' ? 'folder' : 'building'} className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-ink">{p.name}</div>
+                      <div className="text-xs text-mute">
+                        {p.ids.length} transaction{p.ids.length !== 1 ? 's' : ''}
+                        {tab === 'venues' && p.eventIds && p.eventIds.length > 0 && ` · ${p.eventIds.length} event${p.eventIds.length !== 1 ? 's' : ''}`}
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`font-bold ${p.net >= 0 ? 'text-sage-700' : 'text-pop-700'}`}>{money(p.net)}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex items-center justify-between bg-sage-50 rounded-lg px-2 py-1.5">
+                    <span className="text-sage-700">Income</span>
+                    <span className="font-semibold text-sage-700">{money(p.income)}</span>
+                  </div>
+                  <div className="flex items-center justify-between bg-cream rounded-lg px-2 py-1.5">
+                    <span className="text-ink">Expenses</span>
+                    <span className="font-semibold text-ink">{money(p.expenses)}</span>
+                  </div>
+                </div>
+              </Card>
+            </button>
+          ))}
+        </div>
+      </>
+    );
+  };
+
+  // ========================================================================
+  // Settings Page
+  // ========================================================================
+  const Settings = () => {
+    const { settings, updateSettings, transactions } = useApp();
+    const [form, setForm] = useState(settings);
+    const [saved, setSaved] = useState(false);
+    const [confirmReset, setConfirmReset] = useState(false);
+
+    const save = (e) => {
+      e.preventDefault();
+      updateSettings(form);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 1800);
+    };
+
+    const exportCSV = () => {
+      const headers = ['Date','Type','Title','Amount','Tips','Category','Payment Method','Project','Notes'];
+      const rows = transactions.map(t => [
+        t.date,
+        t.type,
+        (t.title || '').replace(/"/g, '""'),
+        Number(t.amount || 0).toFixed(2),
+        t.type === 'income' ? Number(t.tips || 0).toFixed(2) : '',
+        t.category || '',
+        t.payment_method || '',
+        (t.project || '').replace(/"/g, '""'),
+        (t.notes || '').replace(/"/g, '""').replace(/\n/g, ' '),
+      ].map(v => `"${v}"`).join(','));
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `freelanceflow-export-${todayISO()}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+
+    const resetAll = () => {
+      localStorage.removeItem('ff_transactions');
+      localStorage.removeItem('ff_events');
+      localStorage.removeItem('ff_settings');
+      window.location.reload();
+    };
+
+    return (
+      <>
+        <PageHeader title="Settings" subtitle="Preferences and data" />
+        <div className="px-5 space-y-4">
+          <Card className="p-4 flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center">
+              <Icon name="user" className="w-6 h-6" />
+            </div>
+            <div className="flex-1">
+              <div className="font-semibold text-ink">{settings.business_name || 'Your business'}</div>
+              <div className="text-xs text-mute">Data stored locally on this device</div>
+            </div>
+          </Card>
+
+          <form onSubmit={save} className="space-y-4">
+            <Card className="p-4 space-y-4">
+              <h3 className="font-semibold text-ink">Profile</h3>
+              <div><Label>Business name</Label>
+                <Input value={form.business_name || ''} onChange={e => setForm({ ...form, business_name: e.target.value })} placeholder="e.g. Your Name Photography" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div><Label>Currency</Label>
+                  <Input value={form.currency || '$'} onChange={e => setForm({ ...form, currency: e.target.value })} maxLength={3} />
+                </div>
+                <div><Label>Tax Rate %</Label>
+                  <Input type="number" step="0.1" min="0" value={form.tax_rate || 0} onChange={e => setForm({ ...form, tax_rate: Number(e.target.value) })} />
+                </div>
+              </div>
+              <div><Label>Default Payment Method</Label>
+                <Select value={form.default_payment_method} onChange={e => setForm({ ...form, default_payment_method: e.target.value })}>
+                  {PAYMENT_METHODS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
+                </Select>
+              </div>
+              <Button type="submit" className="w-full">
+                {saved ? <><Icon name="check" className="w-5 h-5" /> Saved!</> : 'Save settings'}
+              </Button>
+            </Card>
+          </form>
+
+          <Card className="p-4">
+            <h3 className="font-semibold text-ink mb-1">Export</h3>
+            <p className="text-sm text-mute mb-3">Download all your transactions as a CSV file.</p>
+            <Button variant="secondary" onClick={exportCSV} className="w-full">
+              <Icon name="download" className="w-5 h-5" /> Export to CSV
+            </Button>
+          </Card>
+
+          <Card className="p-4 border-pop-100 bg-pop-50/50">
+            <h3 className="font-semibold text-pop-700 mb-1">Danger zone</h3>
+            <p className="text-sm text-mute mb-3">Delete all transactions, events, and settings on this device. This cannot be undone.</p>
+            <Button variant="dangerGhost" className="w-full border border-pop-100 bg-white" onClick={() => setConfirmReset(true)}>
+              Reset all data
+            </Button>
+          </Card>
+        </div>
+        <ConfirmDialog open={confirmReset} onClose={() => setConfirmReset(false)} onConfirm={resetAll}
+          title="Reset all data?" message="This will delete every transaction, event, and setting on this device. There's no undo." confirmLabel="Delete everything" />
+      </>
+    );
+  };
+
+  // ========================================================================
+  // Transaction Detail Modal
+  // ========================================================================
+  const TransactionDetail = ({ transactionId, onClose }) => {
+    const { transactions, updateTransaction, deleteTransaction, money } = useApp();
+    // ALWAYS derive from live cache — never snapshot
+    const t = transactions.find(x => x.id === transactionId) || null;
+    const [editing, setEditing] = useState(false);
+    const [editData, setEditData] = useState(null);
+    const [confirmDel, setConfirmDel] = useState(false);
+    const [receiptThumb, setReceiptThumb] = useState(null);
+    const [viewingReceipt, setViewingReceipt] = useState(false);
+
+    useEffect(() => {
+      let cancelled = false;
+      if (t && t.type === 'expense' && t.has_receipt) {
+        getReceipt(t.id).then(src => { if (!cancelled) setReceiptThumb(src); }).catch(() => {});
+      } else {
+        setReceiptThumb(null);
+      }
+      return () => { cancelled = true; };
+    }, [t && t.id, t && t.has_receipt]);
+
+    useEffect(() => {
+      if (!t && transactionId) onClose && onClose();
+    }, [t, transactionId, onClose]);
+
+    const startEdit = () => {
+      setEditData({
+        title: t.title || '',
+        amount: t.amount || '',
+        tips: t.tips || 0,
+        date: t.date,
+        payment_method: t.payment_method || 'bank_transfer',
+        category: t.category || 'other',
+        project: t.project || '',
+        venue: t.venue || '',
+        linked_to_income_id: t.linked_to_income_id || '',
+        notes: t.notes || '',
+      });
+      setEditing(true);
+    };
+
+    const save = () => {
+      const patch = t.type === 'income' ? {
+        title: editData.title.trim(), amount: Number(editData.amount),
+        tips: Number(editData.tips || 0), date: editData.date,
+        payment_method: editData.payment_method, project: editData.project.trim() || null,
+        venue: editData.venue.trim() || null,
+        notes: editData.notes.trim() || null,
+      } : {
+        title: editData.title.trim(), amount: Number(editData.amount),
+        date: editData.date, category: editData.category,
+        project: editData.project.trim() || null,
+        venue: editData.venue.trim() || null,
+        linked_to_income_id: editData.linked_to_income_id || null,
+        notes: editData.notes.trim() || null,
+      };
+      updateTransaction(t.id, patch);
+      setEditing(false); setEditData(null);
+    };
+
+    const doDelete = () => {
+      deleteTransaction(t.id);
+      setConfirmDel(false);
+      onClose && onClose();
+    };
+
+    if (!t) return null;
+    const isIncome = t.type === 'income';
+    const total = isIncome ? incomeTotal(t) : Number(t.amount || 0);
+
+    const Row = ({ icon, label, value }) => (
+      <div className="flex items-start gap-3 py-3 border-b border-ink/10 last:border-0">
+        <div className="w-9 h-9 rounded-xl bg-cream text-mute flex items-center justify-center shrink-0">
+          <Icon name={icon} className="w-4 h-4" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-xs text-mute">{label}</div>
+          <div className="text-sm font-medium text-ink break-words">{value}</div>
+        </div>
+      </div>
+    );
+
+    return (
+      <Modal open={true} onClose={onClose} title={null}>
+        <div className="overflow-y-auto">
+          <div className="p-5 border-b border-ink/10">
+            <div className="flex items-center justify-between mb-2">
+              <Badge variant={isIncome ? 'income' : 'expense'}>{isIncome ? 'Income' : 'Expense'}</Badge>
+              <div className="flex items-center gap-1">
+                {!editing && (
+                  <button onClick={startEdit} className="w-9 h-9 rounded-full hover:bg-cream flex items-center justify-center text-mute">
+                    <Icon name="edit" className="w-4 h-4" />
+                  </button>
+                )}
+                {!editing && (
+                  <button onClick={() => setConfirmDel(true)} className="w-9 h-9 rounded-full hover:bg-pop-50 flex items-center justify-center text-pop-700">
+                    <Icon name="trash" className="w-4 h-4" />
+                  </button>
+                )}
+                <button onClick={onClose} className="w-9 h-9 rounded-full hover:bg-cream flex items-center justify-center text-mute">
+                  <Icon name="x" className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+            <div className="text-lg font-semibold text-ink">{t.title}</div>
+            <div className={`text-3xl font-bold mt-1 ${isIncome ? 'text-sage-700' : 'text-ink'}`}>
+              {isIncome ? '+' : '−'}{money(total)}
+            </div>
+            {isIncome && Number(t.tips) > 0 && (
+              <div className="text-sm text-mute mt-1">
+                {money(t.amount)} + {money(t.tips)} tips
+              </div>
+            )}
+          </div>
+
+          <div className="p-5">
+            {!editing ? (
+              <>
+                <Row icon="calendar" label="Date" value={formatDate(t.date)} />
+                {isIncome ? (
+                  <Row icon="wallet" label="Payment method" value={PAYMENT_METHODS.find(p => p.value === t.payment_method)?.label || '—'} />
+                ) : (
+                  <Row icon="receipt" label="Category" value={CATEGORIES.find(c => c.value === t.category)?.label || '—'} />
+                )}
+                <Row icon="folder" label="Project / Client" value={t.project || '—'} />
+                <Row icon="building" label="Venue" value={t.venue || '—'} />
+                {!isIncome && t.linked_to_income_id && (() => {
+                  const linked = transactions.find(x => x.id === t.linked_to_income_id);
+                  return <Row icon="dollar" label="Linked income" value={linked ? `${linked.title} · ${formatDate(linked.date)}` : '—'} />;
+                })()}
+                <Row icon="edit" label="Notes" value={t.notes || '—'} />
+                {!isIncome && t.has_receipt && (
+                  <div className="pt-3">
+                    <div className="text-xs text-mute mb-2 flex items-center gap-1.5">
+                      <Icon name="image" className="w-3.5 h-3.5" /> Receipt
+                    </div>
+                    <button type="button" onClick={() => setViewingReceipt(true)}
+                      className="block w-full rounded-xl overflow-hidden bg-cream border border-ink/10 hover:border-ink/25 transition">
+                      {receiptThumb ? (
+                        <img src={receiptThumb} alt="Receipt" className="w-full max-h-64 object-contain bg-cream" />
+                      ) : (
+                        <div className="h-32 flex items-center justify-center text-mute text-sm">Loading…</div>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="space-y-3">
+                <div><Label>Title</Label>
+                  <Input value={editData.title} onChange={e => setEditData({ ...editData, title: e.target.value })} />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div><Label>Amount</Label>
+                    <Input type="number" step="0.01" value={editData.amount} onChange={e => setEditData({ ...editData, amount: e.target.value })} />
+                  </div>
+                  {isIncome && (
+                    <div><Label>Tips</Label>
+                      <Input type="number" step="0.01" value={editData.tips} onChange={e => setEditData({ ...editData, tips: e.target.value })} />
+                    </div>
+                  )}
+                </div>
+                <div><Label>Date</Label>
+                  <Input type="date" value={editData.date} onChange={e => setEditData({ ...editData, date: e.target.value })} />
+                </div>
+                {isIncome ? (
+                  <div><Label>Payment method</Label>
+                    <Select value={editData.payment_method} onChange={e => setEditData({ ...editData, payment_method: e.target.value })}>
+                      {PAYMENT_METHODS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
+                    </Select>
+                  </div>
+                ) : (
+                  <div><Label>Category</Label>
+                    <Select value={editData.category} onChange={e => setEditData({ ...editData, category: e.target.value })}>
+                      {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                    </Select>
+                  </div>
+                )}
+                <div><Label>Project</Label>
+                  <Input value={editData.project} onChange={e => setEditData({ ...editData, project: e.target.value })} />
+                </div>
+                <div><Label>Venue</Label>
+                  <Input value={editData.venue} onChange={e => setEditData({ ...editData, venue: e.target.value })} />
+                </div>
+                {!isIncome && (
+                  <div><Label>Link to income</Label>
+                    <Select value={editData.linked_to_income_id} onChange={e => setEditData({ ...editData, linked_to_income_id: e.target.value })}>
+                      <option value="">— None —</option>
+                      {transactions.filter(x => x.type === 'income').map(i => (
+                        <option key={i.id} value={i.id}>{i.title} · {formatDate(i.date)}</option>
+                      ))}
+                    </Select>
+                  </div>
+                )}
+                <div><Label>Notes</Label>
+                  <Textarea value={editData.notes} onChange={e => setEditData({ ...editData, notes: e.target.value })} />
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <Button variant="secondary" className="flex-1" onClick={() => { setEditing(false); setEditData(null); }}>Cancel</Button>
+                  <Button className="flex-1" onClick={save}>Save changes</Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        <ConfirmDialog open={confirmDel} onClose={() => setConfirmDel(false)} onConfirm={doDelete}
+          title="Delete transaction?" message="This cannot be undone." confirmLabel="Delete" />
+        {viewingReceipt && <ReceiptViewer id={t.id} onClose={() => setViewingReceipt(false)} />}
+      </Modal>
+    );
+  };
+
+  // ========================================================================
+  // Stat Detail Modal
+  // ========================================================================
+  const StatDetail = ({ type, onClose, openTransaction, onOpenReceipts }) => {
+    const { transactions, money } = useApp();
+    const cfg = {
+      income:   { title: 'All income',    filter: t => t.type === 'income', amount: t => Number(t.amount || 0) + Number(t.tips || 0) },
+      tips:     { title: 'All tips',      filter: t => t.type === 'income' && Number(t.tips) > 0, amount: t => Number(t.tips || 0) },
+      expenses: { title: 'All expenses',  filter: t => t.type === 'expense', amount: t => Number(t.amount || 0) },
+    }[type];
+    const [period, setPeriod] = useState('month'); // 'month' | 'quarter' | 'year' | 'all'
+    const [offset, setOffset] = useState(0); // 0 = current, -1 = previous, etc.
+    if (!cfg) return null;
+
+    const now = new Date();
+    const periodCfg = useMemo(() => {
+      if (period === 'month') {
+        const ref = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+        return { label: ref.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }), start: startOfMonth(ref), end: endOfMonth(ref) };
+      }
+      if (period === 'quarter') {
+        const ref = new Date(now.getFullYear(), now.getMonth() + offset * 3, 1);
+        return { label: `Q${Math.floor(ref.getMonth() / 3) + 1} ${ref.getFullYear()}`, start: startOfQuarter(ref), end: endOfQuarter(ref) };
+      }
+      if (period === 'year') {
+        const ref = new Date(now.getFullYear() + offset, 0, 1);
+        return { label: String(ref.getFullYear()), start: startOfYear(ref), end: endOfYear(ref) };
+      }
+      return { label: 'All time', start: null, end: null };
+    }, [period, offset]);
+
+    const setPeriodAndReset = (p) => { setPeriod(p); setOffset(0); };
+
+    const baseList = transactions.filter(cfg.filter);
+    const list = (periodCfg.start && periodCfg.end)
+      ? baseList.filter(t => inRange(t.date, periodCfg.start, periodCfg.end))
+      : baseList;
+    const total = list.reduce((s, t) => s + cfg.amount(t), 0);
+    const receiptCount = type === 'expenses' ? list.filter(t => t.has_receipt).length : 0;
+
+    const PeriodBtn = ({ value, label }) => (
+      <button type="button" onClick={() => setPeriodAndReset(value)}
+        className={`flex-1 h-9 rounded-lg text-sm font-medium transition ${period === value ? 'bg-white shadow-sm text-ink' : 'text-mute hover:text-ink'}`}>
+        {label}
+      </button>
+    );
+
+    const showNav = period !== 'all';
+    const nextDisabled = offset >= 0;
+
+    return (
+      <Modal open={true} onClose={onClose} title={cfg.title}>
+        <div className="p-5 border-b border-ink/10 bg-bg space-y-3">
+          <div className="bg-cream p-1 rounded-xl flex">
+            <PeriodBtn value="month" label="Monthly" />
+            <PeriodBtn value="quarter" label="Quarterly" />
+            <PeriodBtn value="year" label="Annual" />
+            <PeriodBtn value="all" label="All" />
+          </div>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1 text-xs text-mute">
+                {showNav && (
+                  <button type="button" onClick={() => setOffset(o => o - 1)}
+                    className="w-7 h-7 -ml-1 rounded-md hover:bg-cream flex items-center justify-center text-ink"
+                    aria-label="Previous period">
+                    <Icon name="chevronLeft" className="w-4 h-4" />
+                  </button>
+                )}
+                <span className="text-ink font-medium">{periodCfg.label}</span>
+                {showNav && (
+                  <button type="button" onClick={() => !nextDisabled && setOffset(o => o + 1)}
+                    disabled={nextDisabled}
+                    className={`w-7 h-7 rounded-md flex items-center justify-center ${nextDisabled ? 'text-mute/30 cursor-not-allowed' : 'text-ink hover:bg-cream'}`}
+                    aria-label="Next period">
+                    <Icon name="chevronRight" className="w-4 h-4" />
+                  </button>
+                )}
+                {showNav && offset !== 0 && (
+                  <button type="button" onClick={() => setOffset(0)}
+                    className="ml-1 text-[11px] text-brand-700 italic-serif hover:underline">today</button>
+                )}
+                <span className="ml-1 text-mute">· {list.length} {list.length === 1 ? 'entry' : 'entries'}</span>
+              </div>
+              <div className="text-2xl font-bold mt-1 text-ink">{money(total)}</div>
+            </div>
+            {type === 'expenses' && (
+              <button type="button"
+                onClick={() => { onClose(); setTimeout(() => onOpenReceipts && onOpenReceipts(), 100); }}
+                className="inline-flex items-center gap-1.5 px-3 h-9 rounded-lg bg-paper border border-ink/15 text-ink text-sm font-medium hover:bg-cream transition shrink-0">
+                <Icon name="image" className="w-4 h-4" />
+                Receipts{receiptCount > 0 ? ` · ${receiptCount}` : ''}
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="overflow-y-auto p-3 max-h-[60vh]">
+          {list.length === 0 ? (
+            <div className="py-10 text-center text-mute text-sm">Nothing here for this period</div>
+          ) : list.map(t => (
+            <TransactionRow key={t.id} t={t} onClick={() => { onClose(); setTimeout(() => openTransaction(t.id), 100); }} />
+          ))}
+        </div>
+      </Modal>
+    );
+  };
+
+  // ========================================================================
+  // Event Modal (create/edit CalendarEvent — optionally with pay = linked income)
+  // ========================================================================
+  const EventModal = ({ event, initialDate, onClose }) => {
+    const {
+      createEvent, updateEvent, deleteEvent,
+      createTransaction, updateTransaction, deleteTransaction,
+      transactions, events, settings, money,
+    } = useApp();
+
+    const venueSuggestions = useMemo(() => {
+      const set = new Set();
+      transactions.forEach(t => { if (t.venue) set.add(t.venue); });
+      events.forEach(e => { if (e.venue) set.add(e.venue); });
+      return Array.from(set);
+    }, [transactions, events]);
+
+    const isEdit = !!event;
+    // Linked transaction (if this event represents income)
+    const linkedTx = useMemo(() => {
+      if (!event || !event.linked_transaction_id) return null;
+      return transactions.find(t => t.id === event.linked_transaction_id) || null;
+    }, [event, transactions]);
+
+    const [form, setForm] = useState(() => ({
+      title: event?.title || '',
+      date: event?.date || initialDate || todayISO(),
+      start_time: event?.start_time || '',
+      end_time: event?.end_time || '',
+      description: event?.description || '',
+      color: event?.color || (linkedTx ? 'emerald' : 'indigo'),
+      // Pay fields — pre-filled from linked transaction if present
+      amount: linkedTx?.amount ?? '',
+      tips: linkedTx?.tips ?? '',
+      payment_method: linkedTx?.payment_method || settings.default_payment_method || 'bank_transfer',
+      project: linkedTx?.project || '',
+      venue: linkedTx?.venue || event?.venue || '',
+    }));
+    const [confirmDel, setConfirmDel] = useState(false);
+    const [showPay, setShowPay] = useState(!!linkedTx);
+
+    const hasPay = () => {
+      const a = Number(form.amount || 0);
+      const t = Number(form.tips || 0);
+      return showPay && (a > 0 || t > 0);
+    };
+    const payTotal = Number(form.amount || 0) + Number(form.tips || 0);
+
+    const eventFields = () => ({
+      title: form.title.trim(),
+      date: form.date,
+      start_time: form.start_time || '',
+      end_time: form.end_time || '',
+      description: form.description || '',
+      color: form.color,
+      venue: form.venue.trim() || null,
+    });
+
+    const txFields = () => ({
+      type: 'income',
+      title: form.title.trim(),
+      date: form.date,
+      amount: Number(form.amount || 0),
+      tips: Number(form.tips || 0),
+      payment_method: form.payment_method,
+      project: form.project.trim() || null,
+      venue: form.venue.trim() || null,
+      notes: form.description?.trim() || null,
+    });
+
+    const save = (e) => {
+      e.preventDefault();
+      if (!form.title.trim()) return;
+
+      if (!isEdit) {
+        // ---- Create flow ----
+        if (hasPay()) {
+          // Create transaction + auto-create linked event, customizing event fields.
+          createTransaction(txFields(), {
+            color: form.color,
+            start_time: form.start_time,
+            end_time: form.end_time,
+            description: form.description,
+          });
+        } else {
+          createEvent(eventFields());
+        }
+      } else {
+        // ---- Edit flow ----
+        if (linkedTx) {
+          if (hasPay()) {
+            // Both sides still exist — update both.
+            updateEvent(event.id, eventFields());
+            updateTransaction(linkedTx.id, txFields());
+          } else {
+            // Pay was cleared — demote to pure event, delete transaction.
+            // 1) Unlink the event so deleteTransaction's cascade doesn't remove it.
+            updateEvent(event.id, { ...eventFields(), linked_transaction_id: null });
+            // 2) Delete the transaction.
+            deleteTransaction(linkedTx.id);
+          }
+        } else {
+          if (hasPay()) {
+            // Promote pure event to income event: create transaction (skipping auto-event)
+            // and link this event to it.
+            const newTx = createTransaction(txFields(), 'skip');
+            updateEvent(event.id, { ...eventFields(), linked_transaction_id: newTx.id });
+          } else {
+            // Plain event update.
+            updateEvent(event.id, eventFields());
+          }
+        }
+      }
+      onClose && onClose();
+    };
+
+    const handleDelete = () => {
+      if (linkedTx) {
+        // Deleting the transaction also removes the linked event (cascade in context).
+        deleteTransaction(linkedTx.id);
+      } else {
+        deleteEvent(event.id);
+      }
+      setConfirmDel(false);
+      onClose && onClose();
+    };
+
+    const deleteMessage = linkedTx
+      ? 'This event has income attached. Deleting will remove both the event and the income transaction. This cannot be undone.'
+      : 'This cannot be undone.';
+
+    return (
+      <Modal open={true} onClose={onClose} title={isEdit ? 'Edit event' : 'New event'}>
+        <form onSubmit={save} className="p-5 space-y-4 overflow-y-auto">
+          {linkedTx && (
+            <div className="bg-sage-50 border border-sage-200 rounded-xl p-3 text-xs text-sage-800 flex items-start gap-2">
+              <Icon name="dollar" className="w-4 h-4 mt-0.5 shrink-0" />
+              <div>
+                <div className="font-semibold">Linked income · {money(Number(linkedTx.amount) + Number(linkedTx.tips || 0))}</div>
+                <div className="mt-0.5 text-sage-700">Edits here also update the income transaction.</div>
+              </div>
+            </div>
+          )}
+
+          <div><Label>Title *</Label>
+            <Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required />
+          </div>
+          <div><Label>Date</Label>
+            <Input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Start time</Label>
+              <Input type="time" value={form.start_time || ''} onChange={e => setForm({ ...form, start_time: e.target.value })} />
+            </div>
+            <div><Label>End time</Label>
+              <Input type="time" value={form.end_time || ''} onChange={e => setForm({ ...form, end_time: e.target.value })} />
+            </div>
+          </div>
+
+          {/* Pay section — toggleable for pure events, always shown for linked */}
+          {!showPay ? (
+            <button type="button" onClick={() => setShowPay(true)}
+              className="w-full border-2 border-dashed border-ink/15 rounded-xl py-3 text-sm font-medium text-mute hover:border-brand-500 hover:text-brand-600 transition flex items-center justify-center gap-2">
+              <Icon name="plus" className="w-4 h-4" /> Add pay / income to this event
+            </button>
+          ) : (
+            <div className="bg-sage-50/50 border border-sage-200 rounded-xl p-3 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-sage-800 uppercase tracking-wider">Income</span>
+                {!linkedTx && (
+                  <button type="button" onClick={() => { setShowPay(false); setForm({ ...form, amount: '', tips: '' }); }}
+                    className="text-xs text-mute hover:text-ink">Remove</button>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div><Label className="mb-1">Payment</Label>
+                  <Input type="number" step="0.01" min="0" value={form.amount}
+                    onChange={e => setForm({ ...form, amount: e.target.value })} placeholder="0.00" />
+                </div>
+                <div><Label className="mb-1">Tips</Label>
+                  <Input type="number" step="0.01" min="0" value={form.tips}
+                    onChange={e => setForm({ ...form, tips: e.target.value })} placeholder="0.00" />
+                </div>
+              </div>
+              {payTotal > 0 && (
+                <div className="flex items-center justify-between bg-white rounded-lg px-3 py-2">
+                  <span className="text-xs text-sage-700 font-medium">Total</span>
+                  <span className="text-base font-bold text-sage-700">{money(payTotal)}</span>
+                </div>
+              )}
+              <div><Label className="mb-1">Payment method</Label>
+                <Select value={form.payment_method} onChange={e => setForm({ ...form, payment_method: e.target.value })}>
+                  {PAYMENT_METHODS.map(p => <option key={p.value} value={p.value}>{p.label}</option>)}
+                </Select>
+              </div>
+              <div><Label className="mb-1">Project / Client</Label>
+                <Input value={form.project} onChange={e => setForm({ ...form, project: e.target.value })} placeholder="Optional" />
+              </div>
+              {linkedTx && payTotal === 0 && (
+                <div className="text-xs text-ochre-700 bg-ochre-50 border border-ochre-100 rounded-lg px-3 py-2">
+                  Clearing pay will remove the linked income transaction but keep the event.
+                </div>
+              )}
+            </div>
+          )}
+
+          <div><Label>Venue</Label>
+            <Input list="venue-list-em" value={form.venue} onChange={e => setForm({ ...form, venue: e.target.value })} placeholder="Optional" />
+            <datalist id="venue-list-em">{venueSuggestions.map(v => <option key={v} value={v} />)}</datalist>
+          </div>
+          <div><Label>Notes</Label>
+            <Textarea value={form.description || ''} onChange={e => setForm({ ...form, description: e.target.value })} />
+          </div>
+          <div><Label>Color</Label>
+            <div className="flex gap-3">
+              {EVENT_COLORS.map(c => (
+                <button key={c} type="button" onClick={() => setForm({ ...form, color: c })}
+                  className={`w-10 h-10 rounded-full ${COLOR_BG[c]} ${form.color === c ? `ring-4 ring-offset-2 ${COLOR_RING[c]}` : ''}`} />
+              ))}
+            </div>
+          </div>
+          <div className="flex gap-2 pt-2">
+            {isEdit && (
+              <Button type="button" variant="dangerGhost" onClick={() => setConfirmDel(true)}>
+                <Icon name="trash" className="w-4 h-4" />
+              </Button>
+            )}
+            <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>Cancel</Button>
+            <Button type="submit" className="flex-1">{isEdit ? 'Save' : 'Create'}</Button>
+          </div>
+        </form>
+        <ConfirmDialog open={confirmDel} onClose={() => setConfirmDel(false)}
+          onConfirm={handleDelete}
+          title="Delete event?" message={deleteMessage} confirmLabel="Delete" />
+      </Modal>
+    );
+  };
+
+  // ========================================================================
+  // Root App
+  // ========================================================================
+  const App = () => {
+    const [page, setPage] = useState(() => {
+      const hash = (location.hash || '').replace('#', '');
+      const valid = ['dashboard','add','calendar','reports','projects','settings'];
+      return valid.includes(hash) ? hash : 'dashboard';
+    });
+
+    useEffect(() => { location.hash = page; }, [page]);
+
+    // Modal state
+    const [openTxId, setOpenTxId] = useState(null);
+    const [openEvent, setOpenEvent] = useState(null);  // { event } or { initialDate }
+    const [statType, setStatType] = useState(null);
+    const [openReceipts, setOpenReceipts] = useState(false);
+
+    const openTransaction = (id) => setOpenTxId(id);
+    const editEvent = (event) => setOpenEvent({ event });
+    const newEventOnDate = (iso) => setOpenEvent({ initialDate: iso });
+
+    let content = null;
+    if (page === 'dashboard') content = <Dashboard setPage={setPage} openTransaction={openTransaction} openStat={setStatType} />;
+    else if (page === 'add') content = <AddEntry setPage={setPage} />;
+    else if (page === 'calendar') content = <Calendar openTransaction={openTransaction} openEvent={editEvent} createEventOnDate={newEventOnDate} />;
+    else if (page === 'reports') content = <Reports openTransaction={openTransaction} />;
+    else if (page === 'projects') content = <Projects openTransaction={openTransaction} />;
+    else if (page === 'settings') content = <Settings />;
+
+    return (
+      <>
+        <Layout page={page} setPage={setPage}>{content}</Layout>
+        {openTxId && <TransactionDetail transactionId={openTxId} onClose={() => setOpenTxId(null)} />}
+        {openEvent && <EventModal event={openEvent.event} initialDate={openEvent.initialDate} onClose={() => setOpenEvent(null)} />}
+        {statType && <StatDetail type={statType} onClose={() => setStatType(null)}
+          openTransaction={openTransaction} onOpenReceipts={() => setOpenReceipts(true)} />}
+        {openReceipts && <ReceiptsGallery onClose={() => setOpenReceipts(false)} openTransaction={openTransaction} />}
+      </>
+    );
+  };
+
+  const root = ReactDOM.createRoot(document.getElementById('root'));
+  root.render(
+    <AppProvider>
+      <App />
+    </AppProvider>
+  );
+  </script>
+</body>
+</html>

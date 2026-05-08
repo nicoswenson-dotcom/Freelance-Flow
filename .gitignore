@@ -1,0 +1,25 @@
+# Source/working file (deploy uses index.html)
+FreelanceFlow.html
+
+# Private project docs
+*.pdf
+*.docx
+*.HEIC
+*.heic
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+# Build / deploy artifacts
+node_modules/
+dist/
+build/
+
+# Netlify local state
+.netlify/
